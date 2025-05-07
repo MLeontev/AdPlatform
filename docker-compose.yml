@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: ad-platform-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: AdPlatform
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  minio:
+    image: minio/minio:latest
+    container_name: ad-platform-minio
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: ['CMD', 'curl', '-k', 'http://localhost:9000/minio/health/live']
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: AdPlatform/Dockerfile
+    container_name: ad-platform-backend
+    image: ad-platform-backend
+    ports:
+      - '8000:8000'
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;User Id=postgres;Password=postgres;Database=AdPlatform;
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ad-platform-frontend
+    image: ad-platform-frontend
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+
+volumes:
+  pg-data:
+  minio-data:
