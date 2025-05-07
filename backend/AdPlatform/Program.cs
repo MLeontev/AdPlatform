@@ -30,7 +30,7 @@ using (var scope = app.Services.CreateScope())
 
     if (!await _context.Cities.AnyAsync())
     {
-        var cities = LoadCitiesFromCsv("./Data/City.csv");
+        var cities = LoadCitiesFromCsv("./Data/city.csv");
         _context.Cities.AddRange(cities);
         await _context.SaveChangesAsync();
     }
