@@ -6,6 +6,23 @@ import viteLogo from '/vite.svg';
 function App() {
   const [count, setCount] = useState(0);
 
+  const [message, setMessage] = useState('');
+
+  const handleFetch = async () => {
+    try {
+      const response = await fetch('/api/test');
+      if (!response.ok) throw new Error('Ошибка запроса');
+      const data = await response.text();
+      setMessage(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        setMessage('Ошибка: ' + error.message);
+      } else {
+        setMessage('Неизвестная ошибка');
+      }
+    }
+  };
+
   return (
     <>
       <div>
@@ -21,6 +38,8 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
+        <button onClick={handleFetch}>Сделать fetch на /api/test</button>
+        {message && <p>Ответ: {message}</p>}
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
