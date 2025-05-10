@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace AdPlatform.Models;
@@ -15,17 +14,4 @@ public class User : IdentityUser<int>
 
     public List<Ad> Ads { get; set; } = [];
     public List<Favourites> Favourites { get; set; } = [];
-}
-
-public class UserDto
-{
-    [EmailAddress]
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string Name { get; set; }
-    public string Surname { get; set; }
-    [Phone]
-    public string Phone { get; set; }
-    public IFormFile Avatar { get; set; }
-    public DateTimeOffset DateRegister { get; set; }
 }
