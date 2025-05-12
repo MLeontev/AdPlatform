@@ -4,12 +4,14 @@ using AdPlatform.Data;
 using AdPlatform.interfaces;
 using AdPlatform.Models;
 using AdPlatform.Services;
+using AdPlatform.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic.FileIO;
+using Minio;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +33,18 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     })
     .AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+builder.Services.Configure<MinioOptions>(builder.Configuration.GetSection(nameof(MinioOptions)));
+builder.Services.AddSingleton<IMinioClient>(_ =>
+    new MinioClient()
+        .WithEndpoint(builder.Configuration["MinioConfig:Endpoint"])
+        .WithCredentials(
+            builder.Configuration["MinioConfig:AccessKey"],
+            builder.Configuration["MinioConfig:SecretKey"]
+        )
+        .WithSSL(bool.Parse(builder.Configuration["MinioConfig:UseSSL"] ?? "false"))
+        .Build());
 
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 var jwtOptions = builder.Configuration.GetSection(nameof(JwtOptions))
     .Get<JwtOptions>();
 
@@ -57,6 +69,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddScoped<IStorageService, MinioStorageService>();
 
 var app = builder.Build();
 
