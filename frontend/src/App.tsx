@@ -2,6 +2,8 @@ import { useState } from 'react';
 import './styles/App.css';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
+import { Button } from "@/components/ui/button"
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -35,10 +37,10 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <Button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
-        <button onClick={handleFetch}>Сделать fetch на /api/test</button>
+        </Button>
+        <Button onClick={handleFetch}>Сделать fetch на /api/test</Button>
         {message && <p>Ответ: {message}</p>}
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
