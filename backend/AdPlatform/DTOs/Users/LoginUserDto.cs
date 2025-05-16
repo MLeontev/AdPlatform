@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AdPlatform.DTOs;
+namespace AdPlatform.DTOs.Users;
 
 public class LoginUserDto
 {

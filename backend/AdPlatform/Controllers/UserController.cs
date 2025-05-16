@@ -1,5 +1,5 @@
 using AdPlatform.Authorization;
-using AdPlatform.DTOs;
+using AdPlatform.DTOs.Users;
 using AdPlatform.interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -112,6 +112,38 @@ public class UserController : ControllerBase
             Response.Cookies.Delete("RefreshToken");
 
             return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserById(int id)
+    {
+        try
+        {
+            var user = await _userService.GetUserById(id);
+            if (user == null) return NotFound();
+
+            return Ok(user);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, [FromForm] UpdateUserDto dto)
+    {
+        try
+        {
+            var user = await _userService.UpdateUser(id, dto);
+            if (user == null) return NotFound();
+
+            return Ok(user);
         }
         catch (Exception e)
         {

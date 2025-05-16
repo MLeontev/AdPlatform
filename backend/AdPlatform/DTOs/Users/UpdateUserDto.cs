@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AdPlatform.DTOs;
+namespace AdPlatform.DTOs.Users;
 
-public class RegisterUserDto
+public class UpdateUserDto
 {
     [Required]
     [StringLength(50)]
@@ -20,7 +20,5 @@ public class RegisterUserDto
     [Phone]
     public string Phone { get; set; } = string.Empty;
 
-    [Required]
-    [StringLength(100, MinimumLength = 6)]
-    public string Password { get; set; } = string.Empty;
+    public IFormFile? Avatar { get; set; }
 }
