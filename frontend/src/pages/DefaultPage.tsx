@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import '../styles/App.css';
 import reactLogo from '../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Button } from "@/components/ui/button"
-
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 function DefaultPage() {
   const [count, setCount] = useState(0);
@@ -42,6 +41,9 @@ function DefaultPage() {
         </Button>
         <Button onClick={handleFetch}>Сделать fetch на /api/test</Button>
         {message && <p>Ответ: {message}</p>}
+        <Link to="/adform">
+          <Button>Форма объявления</Button>
+        </Link>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
