@@ -1,7 +1,8 @@
 using AdPlatform.Authorization;
-using AdPlatform.DTOs;
+using AdPlatform.DTOs.Users;
 using AdPlatform.interfaces;
 using AdPlatform.Models;
+using AdPlatform.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,15 +14,21 @@ public class UserService : IUserService
     private readonly UserManager<User> _userManager;
     private readonly IJwtProvider _jwtProvider;
     private readonly JwtOptions _jwtOptions;
+    private readonly MinioOptions _minioOptions;
+    private readonly IStorageService _storageService;
 
     public UserService(
         UserManager<User> userManager,
         IJwtProvider jwtProvider,
-        IOptions<JwtOptions> jwtOptions)
+        IOptions<JwtOptions> jwtOptions,
+        IOptions<MinioOptions> minioOptions,
+        IStorageService storageService)
     {
         _userManager = userManager;
         _jwtProvider = jwtProvider;
         _jwtOptions = jwtOptions.Value;
+        _minioOptions = minioOptions.Value;
+        _storageService = storageService;
     }
 
     public async Task<AuthResult> RegisterUser(RegisterUserDto registerDto)
@@ -135,5 +142,79 @@ public class UserService : IUserService
         user.RefreshToken = string.Empty;
         user.RefreshTokenExpiryTime = null;
         await _userManager.UpdateAsync(user);
+    }
+
+    public async Task<UserDto?> GetUserById(int id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user == null) return null;
+
+        var avatarSrc = "";
+        if (!string.IsNullOrEmpty(user.AvatarSrc))
+        {
+            avatarSrc = await _storageService.GetFileUrlAsync(user.AvatarSrc, _minioOptions.AvatarsBucketName);
+        }
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Surname = user.Surname,
+            Email = user.Email!,
+            Phone = user.PhoneNumber!,
+            AvatarSrc = avatarSrc,
+            RegistrationDate = user.RegistrationDate
+        };
+    }
+
+    public async Task<UserDto?> UpdateUser(int id, UpdateUserDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user == null) return null;
+
+        var existingByEmail = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.Email == dto.Email && u.Id != id);
+        if (existingByEmail != null)
+            throw new Exception("A user with this email already exists");
+
+        var existingByPhone = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.PhoneNumber == dto.Phone && u.Id != id);
+        if (existingByPhone != null)
+            throw new Exception("A user with this phone number already exists");
+
+        user.Name = dto.Name;
+        user.Surname = dto.Surname;
+        user.Email = dto.Email;
+        user.PhoneNumber = dto.Phone;
+
+        if (dto.Avatar != null)
+        {
+            if (!string.IsNullOrWhiteSpace(user.AvatarSrc))
+            {
+                await _storageService.DeleteFileAsync(user.AvatarSrc, _minioOptions.AvatarsBucketName);
+            }
+
+            var fileName = await _storageService.UploadFileAsync(dto.Avatar, _minioOptions.AvatarsBucketName);
+            user.AvatarSrc = fileName;
+        }
+
+        await _userManager.UpdateAsync(user);
+
+        var avatarSrc = "";
+        if (!string.IsNullOrEmpty(user.AvatarSrc))
+        {
+            avatarSrc = await _storageService.GetFileUrlAsync(user.AvatarSrc, _minioOptions.AvatarsBucketName);
+        }
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Surname = user.Surname,
+            Email = user.Email!,
+            Phone = user.PhoneNumber!,
+            AvatarSrc = avatarSrc,
+            RegistrationDate = user.RegistrationDate
+        };
     }
 }
