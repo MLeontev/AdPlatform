@@ -2,6 +2,7 @@ using System.Text;
 using AdPlatform.Authorization;
 using AdPlatform.Data;
 using AdPlatform.interfaces;
+using AdPlatform.Interfaces;
 using AdPlatform.Models;
 using AdPlatform.Services;
 using AdPlatform.Storage;
@@ -68,6 +69,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAdService, AdService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IStorageService, MinioStorageService>();
 
