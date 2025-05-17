@@ -103,4 +103,42 @@ public class AdService : IAdService
             }
         };
     }
+
+    public async Task UpdateAd(int userId, int adId, UpdateAdDto updateAdDto)
+    {
+        var ad = await _dbContext.Ads
+            .Include(a => a.Images)
+            .FirstOrDefaultAsync(a => a.Id == adId && a.UserId == userId);
+
+        if (ad == null)
+        {
+            throw new Exception("Ad not found or you do not have permission to update it");
+        }
+
+        ad.Title = updateAdDto.Title;
+        ad.Description = updateAdDto.Description;
+        ad.Price = updateAdDto.Price;
+        ad.CategoryId = updateAdDto.CategoryId;
+        ad.CityId = updateAdDto.CityId;
+        ad.UpdatedAt = DateTime.UtcNow;
+        ad.IsSold = updateAdDto.IsSold;
+
+        foreach (var file in updateAdDto.NewFiles)
+        {
+            var imageSrc = await _storageService.UploadFileAsync(file, _minioOptions.AdImagesBucketName);
+            ad.Images.Add(new AdImage { ImageSrc = imageSrc });
+        }
+
+        foreach (var fileName in updateAdDto.RemoveFileNames)
+        {
+            var image = ad.Images.FirstOrDefault(i => i.ImageSrc == fileName);
+            if (image != null)
+            {
+                await _storageService.DeleteFileAsync(image.ImageSrc, _minioOptions.AdImagesBucketName);
+                ad.Images.Remove(image);
+            }
+        }
+
+        await _dbContext.SaveChangesAsync();
+    }
 }

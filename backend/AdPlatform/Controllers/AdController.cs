@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AdPlatform.DTOs.Ads;
 using AdPlatform.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdPlatform.Controllers;
@@ -16,6 +17,7 @@ public class AdController : ControllerBase
         _adService = adService;
     }
 
+    // [Authorize] - Раскомментировать, когда будет реализована авторизация
     [HttpPost]
     public async Task<IActionResult> CreateAd([FromForm] CreateAdDto createAdDto)
     {
@@ -42,6 +44,24 @@ public class AdController : ControllerBase
             if (ad is null) return NotFound();
 
             return Ok(ad);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // [Authorize] - Раскомментировать, когда будет реализована авторизация
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAd(int id, [FromForm] UpdateAdDto updateAdDto)
+    {
+        try
+        {
+            // Раскомментировать, когда будет реализована авторизация
+            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var userId = 2; // Временно, для тестирования
+            await _adService.UpdateAd(userId, id, updateAdDto);
+            return NoContent();
         }
         catch (Exception e)
         {
