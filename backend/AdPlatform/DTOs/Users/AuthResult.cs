@@ -1,4 +1,4 @@
-namespace AdPlatform.DTOs;
+namespace AdPlatform.DTOs.Users;
 
 public class AuthResult
 {

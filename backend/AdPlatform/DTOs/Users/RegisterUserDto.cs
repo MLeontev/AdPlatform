@@ -1,15 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AdPlatform.DTOs;
+namespace AdPlatform.DTOs.Users;
 
 public class RegisterUserDto
 {
     [Required]
-    [StringLength(50)]
+    [StringLength(50, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(50)]
+    [StringLength(50, MinimumLength = 2)]
     public string Surname { get; set; } = string.Empty;
 
     [Required]

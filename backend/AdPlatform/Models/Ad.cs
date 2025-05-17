@@ -10,6 +10,9 @@ public class Ad
     public string Description { get; set; } = string.Empty;
     public int Price { get; set; }
 
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;
 
@@ -19,7 +22,7 @@ public class Ad
     public bool IsSold { get; set; } = false;
 
     public DateTimeOffset CreatedAt { get; set; }
-    public DateTimeOffset UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
 
-    public List<AdImage> Images { get; set; } = new List<AdImage>();
+    public List<AdImage> Images { get; set; } = [];
 }
