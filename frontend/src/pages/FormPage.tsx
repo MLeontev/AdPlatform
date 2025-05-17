@@ -17,7 +17,7 @@ function FormPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 max-w-md mx-auto p-6">
+      <div className="flex flex-col gap-6 w-fit mx-auto p-6">
         <AdForm
           onSubmit={(data) => console.log(data)}
           categories={['1', '2']}

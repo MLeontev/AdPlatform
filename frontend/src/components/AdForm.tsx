@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import '@/styles/AdForm.css';
 
 interface AdFormProps {
   initialData?: Ad;
@@ -97,29 +96,32 @@ export const AdForm: React.FC<AdFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="ad-form bg-white p-6 rounded-lg shadow-md mb-8 mt-4 "
+      className="ad-form flex flex-col justify-between items-start w-fit h-fit bg-white p-6 rounded-lg shadow-md mb-8 mt-4 "
     >
-      <Label className="text-3xl font-bold text-center mb-8 mt-4">
-        {initialData ? 'Редактирование формы' : 'Создание формы'}
+      <Label className="ml-[10px] text-3xl font-bold text-center mb-8 mt-4">
+        {initialData ? 'Редактирование объявления' : 'Создание объявления'}
       </Label>
-      <Label>Название</Label>
+      <Label className="ml-[10px]">Название</Label>
       <Input
+        className="m-[10px] w-[300px]"
         name="title"
         value={formData.title}
         onChange={handleChange}
         placeholder="Название"
         required
       />
-      <Label>Описание</Label>
+      <Label className="ml-[10px]">Описание</Label>
       <Textarea
+        className="m-[10px] w-[500px] min-h-[150px]"
         name="description"
         value={formData.description}
         onChange={handleChange}
         placeholder="Описание"
         required
       />
-      <Label>Стоимость</Label>
+      <Label className="ml-[10px]">Стоимость</Label>
       <Input
+        className="m-[10px] w-[300px]"
         type="number"
         name="price"
         value={formData.price}
@@ -128,7 +130,7 @@ export const AdForm: React.FC<AdFormProps> = ({
         required
       />
 
-      <Label>
+      <Label className="ml-[10px]">
         Категория:
         <Select
           name="category"
@@ -138,7 +140,7 @@ export const AdForm: React.FC<AdFormProps> = ({
           }
           required
         >
-          <SelectTrigger>
+          <SelectTrigger className="m-[10px]">
             <SelectValue placeholder="Выберите категорию" />
           </SelectTrigger>
           <SelectContent>
@@ -154,7 +156,7 @@ export const AdForm: React.FC<AdFormProps> = ({
         </Select>
       </Label>
 
-      <Label>
+      <Label className="ml-[10px]">
         Город:
         <Select
           name="city"
@@ -164,7 +166,7 @@ export const AdForm: React.FC<AdFormProps> = ({
           }
           required
         >
-          <SelectTrigger>
+          <SelectTrigger className="m-[10px]">
             <SelectValue placeholder="Выберите город" />
           </SelectTrigger>
           <SelectContent>
@@ -180,9 +182,10 @@ export const AdForm: React.FC<AdFormProps> = ({
         </Select>
       </Label>
 
-      <Label>
+      <Label className="ml-[10px]">
         Продано:
         <Input
+          className="m-[10px] w-4"
           type="checkbox"
           name="isSold"
           checked={formData.isSold}
@@ -191,13 +194,16 @@ export const AdForm: React.FC<AdFormProps> = ({
       </Label>
 
       <div className="image-upload">
-        <Label>Изображения:</Label>
-        <Input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImageUpload}
-        />
+        <Label className="ml-[10px]">
+          Изображения:
+          <Input
+            className="my-[10px] w-[300px]"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+          />
+        </Label>
         <div className="preview-list flex gap-2.5 flex-wrap">
           {imagePreviews.map((url, index) => (
             <div key={index} className="relative">
@@ -209,7 +215,7 @@ export const AdForm: React.FC<AdFormProps> = ({
               <Button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute top-0 right-0"
+                className="m-[5px] absolute top-0 right-0"
               >
                 X
               </Button>
@@ -219,13 +225,19 @@ export const AdForm: React.FC<AdFormProps> = ({
       </div>
 
       {initialData?.createdAt && (
-        <p>Создано: {new Date(initialData.createdAt).toLocaleString()}</p>
+        <Label className="m-[10px]">
+          Создано: {new Date(initialData.createdAt).toLocaleString()}
+        </Label>
       )}
       {initialData?.updatedAt && (
-        <p>Обновлено: {new Date(initialData.updatedAt).toLocaleString()}</p>
+        <Label className="m-[10px]">
+          Обновлено: {new Date(initialData.updatedAt).toLocaleString()}
+        </Label>
       )}
 
-      <Button type="submit">{initialData ? 'Сохранить' : 'Создать'}</Button>
+      <Button className="m-[10px]" type="submit">
+        {initialData ? 'Сохранить' : 'Создать'}
+      </Button>
     </form>
   );
 };
