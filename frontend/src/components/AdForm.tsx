@@ -105,6 +105,8 @@ export const AdForm: React.FC<AdFormProps> = ({
       <Input
         className="m-[10px] w-[300px]"
         name="title"
+        minLength={3}
+        maxLength={100}
         value={formData.title}
         onChange={handleChange}
         placeholder="Название"
@@ -113,7 +115,10 @@ export const AdForm: React.FC<AdFormProps> = ({
       <Label className="ml-[10px]">Описание</Label>
       <Textarea
         className="m-[10px] w-[500px] min-h-[150px]"
+        className="m-[10px] w-[413px] min-h-[150px]"
         name="description"
+        minLength={10}
+        maxLength={100}
         value={formData.description}
         onChange={handleChange}
         placeholder="Описание"
@@ -124,6 +129,8 @@ export const AdForm: React.FC<AdFormProps> = ({
         className="m-[10px] w-[300px]"
         type="number"
         name="price"
+        min={0}
+        max={999999999}
         value={formData.price}
         onChange={handleChange}
         placeholder="Цена"
@@ -192,6 +199,18 @@ export const AdForm: React.FC<AdFormProps> = ({
           onChange={handleChange}
         />
       </Label>
+      {initialData && (
+        <Label className="ml-[10px]">
+          Продано:
+          <Input
+            className="m-[10px] w-4"
+            type="checkbox"
+            name="isSold"
+            checked={formData.isSold}
+            onChange={handleChange}
+          />
+        </Label>
+      )}
 
       <div className="image-upload">
         <Label className="ml-[10px]">
