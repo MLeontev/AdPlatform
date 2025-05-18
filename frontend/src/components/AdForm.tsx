@@ -13,13 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import '@/styles/AdForm.css';
+import { Category } from '@/types/category.ts';
+import { City } from '@/types/city.ts';
+import { AdImage } from '@/types/adImage.ts';
 
 interface AdFormProps {
-  initialData?: Ad;
-  onSubmit: (data: Ad) => void;
-  categories: string[];
-  cities: string[];
+  initialData?: Ad | null;
+  onSubmit: (data: Ad, id?: number) => void;
+  categories: Category[];
+  cities: City[];
 }
 
 export const AdForm: React.FC<AdFormProps> = ({
@@ -30,18 +32,31 @@ export const AdForm: React.FC<AdFormProps> = ({
 }) => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<AdImage[]>([]);
+  const [uploadedImagePreviews, setUploadedImagePreviews] = useState<string[]>(
+    [],
+  );
   const [formData, setFormData] = useState<Ad>(
     initialData || {
       title: '',
       description: '',
       price: 0,
-      category: '',
-      city: '',
-      user: 'currentUserId', // заменить на реального пользователя
-      images: [],
+      categoryId: '1',
+      cityId: '1',
+      user: '2', // заменить на реального пользователя
+      imagesLocal: [],
+      imagesUploaded: [],
+      imagesToRemove: [],
       isSold: false,
     },
   );
+
+  useEffect(() => {
+    if (initialData) {
+      setUploadedImages(initialData.imagesUploaded);
+    }
+    console.log(initialData);
+  }, []);
 
   useEffect(() => {
     const objectUrls = imageFiles.map((file) => URL.createObjectURL(file));
@@ -51,6 +66,11 @@ export const AdForm: React.FC<AdFormProps> = ({
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [imageFiles]);
+
+  useEffect(() => {
+    const objectUrls = uploadedImages.map((image) => image.url);
+    setUploadedImagePreviews(objectUrls);
+  }, [uploadedImages]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -62,6 +82,11 @@ export const AdForm: React.FC<AdFormProps> = ({
 
   const removeImage = (index: number) => {
     setImageFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeUploadedImage = (index: number) => {
+    formData.imagesUploaded.push(uploadedImages[index]);
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleChange = (
@@ -82,71 +107,85 @@ export const AdForm: React.FC<AdFormProps> = ({
     }));
   };
 
+  const handleCategoryChange = (selectedId: string) => {
+    setFormData((prev) => ({ ...prev, categoryId: selectedId }));
+  };
+
+  const handleCityChange = (selectedId: string) => {
+    setFormData((prev) => ({ ...prev, cityId: selectedId }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    formData.images = imagePreviews;
-    if (initialData) {
-      formData.updatedAt = new Date().toString();
+    formData.imagesLocal = imageFiles;
+    formData.imagesUploaded = uploadedImages;
+    if (initialData && initialData.id) {
+      onSubmit(formData, initialData.id);
     } else {
-      formData.createdAt = new Date().toString();
-      formData.updatedAt = new Date().toString();
+      onSubmit(formData);
     }
-    onSubmit(formData);
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="ad-form bg-white p-6 rounded-lg shadow-md mb-8 mt-4 "
+      className="ad-form flex flex-col justify-between items-start w-fit h-fit bg-white p-6 rounded-lg shadow-md mb-8 mt-4 "
     >
-      <Label className="text-3xl font-bold text-center mb-8 mt-4">
-        {initialData ? 'Редактирование формы' : 'Создание формы'}
+      <Label className="ml-[10px] text-3xl font-bold text-center mb-8 mt-4">
+        {initialData ? 'Редактирование объявления' : 'Создание объявления'}
       </Label>
-      <Label>Название</Label>
+      <Label className="ml-[10px]">Название</Label>
       <Input
+        className="m-[10px] w-[300px]"
         name="title"
+        minLength={3}
+        maxLength={100}
         value={formData.title}
         onChange={handleChange}
         placeholder="Название"
         required
       />
-      <Label>Описание</Label>
+      <Label className="ml-[10px]">Описание</Label>
       <Textarea
+        className="m-[10px] w-[413px] min-h-[150px]"
         name="description"
+        minLength={10}
+        maxLength={100}
         value={formData.description}
         onChange={handleChange}
         placeholder="Описание"
         required
       />
-      <Label>Стоимость</Label>
+      <Label className="ml-[10px]">Стоимость</Label>
       <Input
+        className="m-[10px] w-[300px]"
         type="number"
         name="price"
+        min={0}
+        max={999999999}
         value={formData.price}
         onChange={handleChange}
         placeholder="Цена"
         required
       />
 
-      <Label>
+      <Label className="ml-[10px]">
         Категория:
         <Select
           name="category"
-          value={formData.category}
-          onValueChange={(value) =>
-            setFormData((prev) => ({ ...prev, category: value }))
-          }
+          value={formData.categoryId}
+          onValueChange={handleCategoryChange}
           required
         >
-          <SelectTrigger>
+          <SelectTrigger className="m-[10px]">
             <SelectValue placeholder="Выберите категорию" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Категории</SelectLabel>
               {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
+                <SelectItem key={cat.id} value={cat.id.toString()}>
+                  {cat.name}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -154,25 +193,23 @@ export const AdForm: React.FC<AdFormProps> = ({
         </Select>
       </Label>
 
-      <Label>
+      <Label className="ml-[10px]">
         Город:
         <Select
           name="city"
-          value={formData.city}
-          onValueChange={(value) =>
-            setFormData((prev) => ({ ...prev, city: value }))
-          }
+          value={formData.cityId}
+          onValueChange={handleCityChange}
           required
         >
-          <SelectTrigger>
+          <SelectTrigger className="m-[10px]">
             <SelectValue placeholder="Выберите город" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Города</SelectLabel>
               {cities.map((city) => (
-                <SelectItem key={city} value={city}>
-                  {city}
+                <SelectItem key={city.id} value={city.id.toString()}>
+                  {city.name}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -180,25 +217,47 @@ export const AdForm: React.FC<AdFormProps> = ({
         </Select>
       </Label>
 
-      <Label>
-        Продано:
-        <Input
-          type="checkbox"
-          name="isSold"
-          checked={formData.isSold}
-          onChange={handleChange}
-        />
-      </Label>
+      {initialData && (
+        <Label className="ml-[10px]">
+          Продано:
+          <Input
+            className="m-[10px] w-4"
+            type="checkbox"
+            name="isSold"
+            checked={formData.isSold}
+            onChange={handleChange}
+          />
+        </Label>
+      )}
 
       <div className="image-upload">
-        <Label>Изображения:</Label>
-        <Input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImageUpload}
-        />
+        <Label className="ml-[10px]">
+          Изображения:
+          <Input
+            className="my-[10px] w-[300px]"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+          />
+        </Label>
         <div className="preview-list flex gap-2.5 flex-wrap">
+          {uploadedImagePreviews.map((url, index) => (
+            <div key={index} className="relative">
+              <img
+                src={url}
+                alt={`preview-${index}`}
+                className="w-[100px] h-[100px] object-cover"
+              />
+              <Button
+                type="button"
+                onClick={() => removeUploadedImage(index)}
+                className="m-[5px] absolute top-0 right-0"
+              >
+                X
+              </Button>
+            </div>
+          ))}
           {imagePreviews.map((url, index) => (
             <div key={index} className="relative">
               <img
@@ -209,7 +268,7 @@ export const AdForm: React.FC<AdFormProps> = ({
               <Button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute top-0 right-0"
+                className="m-[5px] absolute top-0 right-0"
               >
                 X
               </Button>
@@ -219,13 +278,19 @@ export const AdForm: React.FC<AdFormProps> = ({
       </div>
 
       {initialData?.createdAt && (
-        <p>Создано: {new Date(initialData.createdAt).toLocaleString()}</p>
+        <Label className="m-[10px]">
+          Создано: {new Date(initialData.createdAt).toLocaleString()}
+        </Label>
       )}
       {initialData?.updatedAt && (
-        <p>Обновлено: {new Date(initialData.updatedAt).toLocaleString()}</p>
+        <Label className="m-[10px]">
+          Обновлено: {new Date(initialData.updatedAt).toLocaleString()}
+        </Label>
       )}
 
-      <Button type="submit">{initialData ? 'Сохранить' : 'Создать'}</Button>
+      <Button className="m-[10px]" type="submit">
+        {initialData ? 'Сохранить' : 'Создать'}
+      </Button>
     </form>
   );
 };
