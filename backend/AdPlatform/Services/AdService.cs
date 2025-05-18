@@ -93,6 +93,7 @@ public class AdService : IAdService
             CategoryName = ad.Category.Name,
             CityId = ad.City.Id,
             CityName = ad.City.Name,
+            IsSold = ad.IsSold,
             User = new UserDto
             {
                 Id = ad.User.Id,
