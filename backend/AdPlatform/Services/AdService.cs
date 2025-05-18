@@ -1,4 +1,5 @@
 using AdPlatform.Data;
+using AdPlatform.DTOs;
 using AdPlatform.DTOs.Ads;
 using AdPlatform.DTOs.Users;
 using AdPlatform.Interfaces;
@@ -163,5 +164,60 @@ public class AdService : IAdService
 
         _dbContext.Ads.Remove(ad);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<PagedList<AdListItemDto>> GetAds(GetAdsDto getAdsDto)
+    {
+        var query = _dbContext.Ads
+            .Include(a => a.Category)
+            .Include(a => a.City)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(getAdsDto.SearchQuery))
+            query = query.Where(a => a.Title.ToLower().Contains(getAdsDto.SearchQuery.ToLower()));
+
+        if (getAdsDto.MinPrice.HasValue)
+            query = query.Where(a => a.Price >= getAdsDto.MinPrice.Value);
+
+        if (getAdsDto.MaxPrice.HasValue)
+            query = query.Where(a => a.Price <= getAdsDto.MaxPrice.Value);
+
+        if (getAdsDto.CategoryId.HasValue)
+            query = query.Where(a => a.CategoryId == getAdsDto.CategoryId.Value);
+
+        if (getAdsDto.CityIds != null && getAdsDto.CityIds.Count > 0)
+            query = query.Where(a => getAdsDto.CityIds.Contains(a.CityId));
+
+        var totalCount = await query.CountAsync();
+
+        var ads = await query
+            .Where(a => !a.IsSold)
+            .OrderByDescending(a => a.CreatedAt)
+            .Include(a => a.Images)
+            .Skip((getAdsDto.PageNumber - 1) * getAdsDto.PageSize)
+            .Take(getAdsDto.PageSize)
+            .ToListAsync();
+
+        var adDtos = new List<AdListItemDto>();
+        foreach (var ad in ads)
+        {
+            var mainImage = ad.Images.FirstOrDefault()?.ImageSrc ?? string.Empty;
+            var url = string.IsNullOrEmpty(mainImage)
+                ? string.Empty
+                : await _storageService.GetFileUrlAsync(mainImage, _minioOptions.AdImagesBucketName);
+
+            adDtos.Add(new AdListItemDto
+            {
+                Id = ad.Id,
+                Title = ad.Title,
+                Price = ad.Price,
+                IsSold = ad.IsSold,
+                CategoryName = ad.Category.Name,
+                CityName = ad.City.Name,
+                MainImage = url
+            });
+        }
+
+        return new PagedList<AdListItemDto>(adDtos, getAdsDto.PageNumber, getAdsDto.PageSize, totalCount);
     }
 }
