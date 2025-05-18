@@ -5,8 +5,8 @@ export interface Ad {
   title: string;
   description: string;
   price: number;
-  category: string;
-  city: string;
+  categoryId: string;
+  cityId: string;
   user: string;
   imagesLocal: File[];
   imagesUploaded: AdImage[];

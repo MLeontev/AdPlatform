@@ -1,34 +1,65 @@
 import { AdForm } from '@/components/AdForm';
 import { Ad } from '@/types/ad';
+import { getAd, postAd, putAd } from '@/api/ads.ts';
+import { useEffect, useState } from 'react';
 
 function FormPage() {
-  const initialData: Ad = {
-    title: '',
-    description: '',
-    price: 0,
-    category: '',
-    city: '',
-    user: 'currentUserId', // заменить на реального пользователя
-    images: [],
-    isSold: false,
-    createdAt: 'Sun Jan 27 2013 11:00:00 GMT+0400 (Москва, стандартное время)',
-    updatedAt: 'Sun Jan 27 2023 11:00:00 GMT+0400 (Москва, стандартное время)',
+  const [formData, setFormData] = useState<Ad | null>(null);
+
+  useEffect(() => {
+    GetAd(29); // Тестирование работы запроса
+  }, []);
+
+  const PostAd = async (formData: Ad) => {
+    const response = await postAd({ ...formData });
+    console.log(response);
+  };
+
+  const GetAd = async (id: number) => {
+    const response = await getAd(id);
+    console.log(response);
+    if (response) {
+      const data: Ad = {
+        id: response.id,
+        title: response.title,
+        description: response.description,
+        price: response.price,
+        categoryId: response.category.id.toString(),
+        cityId: response.city.id.toString(),
+        user: response.user.id.toString(),
+        imagesUploaded: response.images,
+        isSold: response.isSold,
+        createdAt: response.createdAt,
+        updatedAt: response.updatedAt,
+        imagesLocal: [],
+      };
+      setFormData(data);
+    }
+  };
+
+  const PutAd = async (formData: Ad, id?: number) => {
+    if (id) {
+      const response = await putAd(id, { ...formData });
+      console.log(response);
+    }
   };
 
   return (
     <>
       <div className="flex flex-col gap-6 w-fit mx-auto p-6">
         <AdForm
-          onSubmit={(data) => console.log(data)}
-          categories={['1', '2']}
-          cities={['perm', 'moscow']}
+          onSubmit={PostAd}
+          categories={[{ id: 1, name: 'Электроника' }]}
+          cities={[{ id: 1, name: 'Респ Адыгея, г Адыгейск' }]}
         />
-        <AdForm
-          initialData={initialData}
-          onSubmit={(data) => console.log(data)}
-          categories={['1', '2']}
-          cities={['perm', 'moscow']}
-        />
+        {formData && (
+          <AdForm
+            initialData={formData}
+            onSubmit={PutAd}
+            categories={[{ id: 1, name: 'Электроника' }]}
+            cities={[{ id: 1, name: 'Респ Адыгея, г Адыгейск' }]}
+          />
+        )}
       </div>
     </>
   );

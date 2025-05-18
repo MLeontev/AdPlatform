@@ -13,13 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Category } from '@/types/category.ts';
+import { City } from '@/types/city.ts';
 import { AdImage } from '@/types/adImage.ts';
 
 interface AdFormProps {
-  initialData?: Ad;
-  onSubmit: (data: Ad) => void;
-  categories: string[];
-  cities: string[];
+  initialData?: Ad | null;
+  onSubmit: (data: Ad, id?: number) => void;
+  categories: Category[];
+  cities: City[];
 }
 
 export const AdForm: React.FC<AdFormProps> = ({
@@ -39,9 +41,9 @@ export const AdForm: React.FC<AdFormProps> = ({
       title: '',
       description: '',
       price: 0,
-      category: '',
-      city: '',
-      user: 'currentUserId', // заменить на реального пользователя
+      categoryId: '1',
+      cityId: '1',
+      user: '2', // заменить на реального пользователя
       imagesLocal: [],
       imagesUploaded: [],
       imagesToRemove: [],
@@ -105,17 +107,23 @@ export const AdForm: React.FC<AdFormProps> = ({
     }));
   };
 
+  const handleCategoryChange = (selectedId: string) => {
+    setFormData((prev) => ({ ...prev, categoryId: selectedId }));
+  };
+
+  const handleCityChange = (selectedId: string) => {
+    setFormData((prev) => ({ ...prev, cityId: selectedId }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (initialData) {
-      formData.updatedAt = new Date().toString();
     formData.imagesLocal = imageFiles;
     formData.imagesUploaded = uploadedImages;
+    if (initialData && initialData.id) {
+      onSubmit(formData, initialData.id);
     } else {
-      formData.createdAt = new Date().toString();
-      formData.updatedAt = new Date().toString();
+      onSubmit(formData);
     }
-    onSubmit(formData);
   };
 
   return (
@@ -165,10 +173,8 @@ export const AdForm: React.FC<AdFormProps> = ({
         Категория:
         <Select
           name="category"
-          value={formData.category}
-          onValueChange={(value) =>
-            setFormData((prev) => ({ ...prev, category: value }))
-          }
+          value={formData.categoryId}
+          onValueChange={handleCategoryChange}
           required
         >
           <SelectTrigger className="m-[10px]">
@@ -178,8 +184,8 @@ export const AdForm: React.FC<AdFormProps> = ({
             <SelectGroup>
               <SelectLabel>Категории</SelectLabel>
               {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
+                <SelectItem key={cat.id} value={cat.id.toString()}>
+                  {cat.name}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -191,10 +197,8 @@ export const AdForm: React.FC<AdFormProps> = ({
         Город:
         <Select
           name="city"
-          value={formData.city}
-          onValueChange={(value) =>
-            setFormData((prev) => ({ ...prev, city: value }))
-          }
+          value={formData.cityId}
+          onValueChange={handleCityChange}
           required
         >
           <SelectTrigger className="m-[10px]">
@@ -204,8 +208,8 @@ export const AdForm: React.FC<AdFormProps> = ({
             <SelectGroup>
               <SelectLabel>Города</SelectLabel>
               {cities.map((city) => (
-                <SelectItem key={city} value={city}>
-                  {city}
+                <SelectItem key={city.id} value={city.id.toString()}>
+                  {city.name}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -213,16 +217,6 @@ export const AdForm: React.FC<AdFormProps> = ({
         </Select>
       </Label>
 
-      <Label className="ml-[10px]">
-        Продано:
-        <Input
-          className="m-[10px] w-4"
-          type="checkbox"
-          name="isSold"
-          checked={formData.isSold}
-          onChange={handleChange}
-        />
-      </Label>
       {initialData && (
         <Label className="ml-[10px]">
           Продано:
