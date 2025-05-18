@@ -1,7 +1,5 @@
 import { UserDto } from '@/types/DTOs/userDto.ts';
 import { ImageDto } from '@/types/DTOs/imageDto.ts';
-import { CategoryDto } from '@/types/DTOs/categoryDto.ts';
-import { CityDto } from '@/types/DTOs/cityDto.ts';
 
 export interface AdDto {
   id: number;
@@ -11,8 +9,10 @@ export interface AdDto {
   isSold: boolean;
   createdAt: string;
   updatedAt?: string;
-  category: CategoryDto;
-  city: CityDto;
+  categoryId: string;
+  categoryName: string;
+  cityId: string;
+  cityName: string;
   user: UserDto;
   images: ImageDto[];
 }

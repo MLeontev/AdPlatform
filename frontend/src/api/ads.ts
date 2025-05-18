@@ -66,6 +66,7 @@ export const putAd = async (id: number, formData: Ad): Promise<void> => {
       }
     }
 
+    console.log(formDataToSend);
     const response = await axios.put<AdDto>('/api/ad/' + id, formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
