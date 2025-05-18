@@ -28,6 +28,16 @@ public class AdService : IAdService
 
     public async Task<int> CreateAd(int userId, CreateAdDto createAdDto)
     {
+        if (await _dbContext.Cities.FindAsync(createAdDto.CityId) == null)
+        {
+            throw new Exception("City not found");
+        }
+
+        if (await _dbContext.Categories.FindAsync(createAdDto.CategoryId) == null)
+        {
+            throw new Exception("Category not found");
+        }
+
         var ad = new Ad
         {
             Title = createAdDto.Title,
@@ -117,6 +127,16 @@ public class AdService : IAdService
         if (ad == null)
         {
             throw new Exception("Ad not found or you do not have permission to update it");
+        }
+
+        if (await _dbContext.Cities.FindAsync(updateAdDto.CityId) == null)
+        {
+            throw new Exception("City not found");
+        }
+
+        if (await _dbContext.Categories.FindAsync(updateAdDto.CategoryId) == null)
+        {
+            throw new Exception("Category not found");
         }
 
         ad.Title = updateAdDto.Title;
