@@ -10,7 +10,7 @@ export interface Ad {
   user: string;
   imagesLocal: File[];
   imagesUploaded: AdImage[];
-  imagesToRemove?: AdImage[];
+  imagesToRemove: AdImage[];
   isSold: boolean;
   createdAt?: string;
   updatedAt?: string;

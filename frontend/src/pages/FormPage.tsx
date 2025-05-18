@@ -17,7 +17,6 @@ function FormPage() {
 
   const GetAd = async (id: number) => {
     const response = await getAd(id);
-    console.log(response);
     if (response) {
       const data: Ad = {
         id: response.id,
@@ -32,6 +31,7 @@ function FormPage() {
         createdAt: response.createdAt,
         updatedAt: response.updatedAt,
         imagesLocal: [],
+        imagesToRemove: [],
       };
       setFormData(data);
     }
@@ -39,8 +39,8 @@ function FormPage() {
 
   const PutAd = async (formData: Ad, id?: number) => {
     if (id) {
-      const response = await putAd(id, { ...formData });
-      console.log(response);
+      console.log(formData);
+      await putAd(id, { ...formData });
     }
   };
 

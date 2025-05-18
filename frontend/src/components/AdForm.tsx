@@ -33,6 +33,7 @@ export const AdForm: React.FC<AdFormProps> = ({
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploadedImages, setUploadedImages] = useState<AdImage[]>([]);
+  const [imagesToRemove, setImagesToRemove] = useState<AdImage[]>([]);
   const [uploadedImagePreviews, setUploadedImagePreviews] = useState<string[]>(
     [],
   );
@@ -55,7 +56,6 @@ export const AdForm: React.FC<AdFormProps> = ({
     if (initialData) {
       setUploadedImages(initialData.imagesUploaded);
     }
-    console.log(initialData);
   }, []);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const AdForm: React.FC<AdFormProps> = ({
   };
 
   const removeUploadedImage = (index: number) => {
-    formData.imagesUploaded.push(uploadedImages[index]);
+    setImagesToRemove((prev) => [...prev, uploadedImages[index]]);
     setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -119,6 +119,7 @@ export const AdForm: React.FC<AdFormProps> = ({
     e.preventDefault();
     formData.imagesLocal = imageFiles;
     formData.imagesUploaded = uploadedImages;
+    formData.imagesToRemove = imagesToRemove;
     if (initialData && initialData.id) {
       onSubmit(formData, initialData.id);
     } else {
