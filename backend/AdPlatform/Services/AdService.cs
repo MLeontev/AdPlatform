@@ -89,7 +89,9 @@ public class AdService : IAdService
             CreatedAt = ad.CreatedAt,
             UpdatedAt = ad.UpdatedAt,
             Images = images,
+            CategoryId = ad.Category.Id,
             CategoryName = ad.Category.Name,
+            CityId = ad.City.Id,
             CityName = ad.City.Name,
             User = new UserDto
             {
@@ -139,6 +141,26 @@ public class AdService : IAdService
             }
         }
 
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteAd(int userId, int adId)
+    {
+        var ad = await _dbContext.Ads
+            .Include(a => a.Images)
+            .FirstOrDefaultAsync(a => a.Id == adId && a.UserId == userId);
+
+        if (ad == null)
+        {
+            throw new Exception("Ad not found or you do not have permission to delete it");
+        }
+
+        foreach (var image in ad.Images)
+        {
+            await _storageService.DeleteFileAsync(image.ImageSrc, _minioOptions.AdImagesBucketName);
+        }
+
+        _dbContext.Ads.Remove(ad);
         await _dbContext.SaveChangesAsync();
     }
 }
