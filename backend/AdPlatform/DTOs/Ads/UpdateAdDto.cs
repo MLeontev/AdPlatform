@@ -9,7 +9,7 @@ public class UpdateAdDto
     public string Title { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(100, MinimumLength = 10)]
+    [StringLength(1000, MinimumLength = 10)]
     public string Description { get; set; } = string.Empty;
 
     [Required]
