@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using AdPlatform.DTOs.Ads;
 using AdPlatform.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdPlatform.Controllers;
@@ -27,7 +26,7 @@ public class AdController : ControllerBase
             // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var userId = 2; // Временно, для тестирования
             var adId = await _adService.CreateAd(userId, createAdDto);
-            return Created();
+            return CreatedAtAction(nameof(GetAdById), new { id = adId }, null);
         }
         catch (Exception e)
         {
@@ -61,6 +60,24 @@ public class AdController : ControllerBase
             // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var userId = 2; // Временно, для тестирования
             await _adService.UpdateAd(userId, id, updateAdDto);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // [Authorize] - Раскомментировать, когда будет реализована авторизация
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAd(int id)
+    {
+        try
+        {
+            // Раскомментировать, когда будет реализована авторизация
+            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var userId = 2; // Временно, для тестирования
+            await _adService.DeleteAd(userId, id);
             return NoContent();
         }
         catch (Exception e)
