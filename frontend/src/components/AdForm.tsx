@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { AdImage } from '@/types/adImage.ts';
 
 interface AdFormProps {
   initialData?: Ad;
@@ -29,6 +30,10 @@ export const AdForm: React.FC<AdFormProps> = ({
 }) => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<AdImage[]>([]);
+  const [uploadedImagePreviews, setUploadedImagePreviews] = useState<string[]>(
+    [],
+  );
   const [formData, setFormData] = useState<Ad>(
     initialData || {
       title: '',
@@ -37,10 +42,19 @@ export const AdForm: React.FC<AdFormProps> = ({
       category: '',
       city: '',
       user: 'currentUserId', // заменить на реального пользователя
-      images: [],
+      imagesLocal: [],
+      imagesUploaded: [],
+      imagesToRemove: [],
       isSold: false,
     },
   );
+
+  useEffect(() => {
+    if (initialData) {
+      setUploadedImages(initialData.imagesUploaded);
+    }
+    console.log(initialData);
+  }, []);
 
   useEffect(() => {
     const objectUrls = imageFiles.map((file) => URL.createObjectURL(file));
@@ -50,6 +64,11 @@ export const AdForm: React.FC<AdFormProps> = ({
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [imageFiles]);
+
+  useEffect(() => {
+    const objectUrls = uploadedImages.map((image) => image.url);
+    setUploadedImagePreviews(objectUrls);
+  }, [uploadedImages]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -61,6 +80,11 @@ export const AdForm: React.FC<AdFormProps> = ({
 
   const removeImage = (index: number) => {
     setImageFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeUploadedImage = (index: number) => {
+    formData.imagesUploaded.push(uploadedImages[index]);
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleChange = (
@@ -83,9 +107,10 @@ export const AdForm: React.FC<AdFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    formData.images = imagePreviews;
     if (initialData) {
       formData.updatedAt = new Date().toString();
+    formData.imagesLocal = imageFiles;
+    formData.imagesUploaded = uploadedImages;
     } else {
       formData.createdAt = new Date().toString();
       formData.updatedAt = new Date().toString();
@@ -114,7 +139,6 @@ export const AdForm: React.FC<AdFormProps> = ({
       />
       <Label className="ml-[10px]">Описание</Label>
       <Textarea
-        className="m-[10px] w-[500px] min-h-[150px]"
         className="m-[10px] w-[413px] min-h-[150px]"
         name="description"
         minLength={10}
@@ -224,6 +248,22 @@ export const AdForm: React.FC<AdFormProps> = ({
           />
         </Label>
         <div className="preview-list flex gap-2.5 flex-wrap">
+          {uploadedImagePreviews.map((url, index) => (
+            <div key={index} className="relative">
+              <img
+                src={url}
+                alt={`preview-${index}`}
+                className="w-[100px] h-[100px] object-cover"
+              />
+              <Button
+                type="button"
+                onClick={() => removeUploadedImage(index)}
+                className="m-[5px] absolute top-0 right-0"
+              >
+                X
+              </Button>
+            </div>
+          ))}
           {imagePreviews.map((url, index) => (
             <div key={index} className="relative">
               <img

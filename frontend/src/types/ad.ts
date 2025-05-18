@@ -1,3 +1,5 @@
+import { AdImage } from '@/types/adImage.ts';
+
 export interface Ad {
   id?: number;
   title: string;
@@ -6,7 +8,9 @@ export interface Ad {
   category: string;
   city: string;
   user: string;
-  images: string[];
+  imagesLocal: File[];
+  imagesUploaded: AdImage[];
+  imagesToRemove?: AdImage[];
   isSold: boolean;
   createdAt?: string;
   updatedAt?: string;
