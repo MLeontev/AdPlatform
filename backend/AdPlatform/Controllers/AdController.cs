@@ -16,6 +16,20 @@ public class AdController : ControllerBase
         _adService = adService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAds([FromQuery] GetAdsDto getAdsDto)
+    {
+        try
+        {
+            var ads = await _adService.GetAds(getAdsDto);
+            return Ok(ads);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     // [Authorize] - Раскомментировать, когда будет реализована авторизация
     [HttpPost]
     public async Task<IActionResult> CreateAd([FromForm] CreateAdDto createAdDto)
