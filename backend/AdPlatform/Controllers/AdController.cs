@@ -30,6 +30,20 @@ public class AdController : ControllerBase
         }
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetAdsByUser(int userId, [FromQuery] GetAdsByUserDto getAdsDto)
+    {
+        try
+        {
+            var ads = await _adService.GetAdsByUser(userId, getAdsDto);
+            return Ok(ads);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     // [Authorize] - Раскомментировать, когда будет реализована авторизация
     [HttpPost]
     public async Task<IActionResult> CreateAd([FromForm] CreateAdDto createAdDto)
