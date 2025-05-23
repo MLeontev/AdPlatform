@@ -31,7 +31,7 @@ public class AdController : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetAdsByUser(int userId, [FromQuery] GetAdsByUserDto getAdsDto)
+    public async Task<IActionResult> GetAdsByUser(int userId, [FromQuery] GetAdsWithSoldDto getAdsDto)
     {
         try
         {

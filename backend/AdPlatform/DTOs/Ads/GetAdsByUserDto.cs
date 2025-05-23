@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AdPlatform.DTOs.Ads;
 
-public class GetAdsByUserDto
+public class GetAdsWithSoldDto
 {
     public int? CategoryId { get; set; }
     public List<int>? CityIds { get; set; }

@@ -241,7 +241,7 @@ public class AdService : IAdService
         return new PagedList<AdListItemDto>(adDtos, getAdsDto.PageNumber, getAdsDto.PageSize, totalCount);
     }
 
-    public async Task<PagedList<AdListItemDto>> GetAdsByUser(int userId, GetAdsByUserDto getAdsDto)
+    public async Task<PagedList<AdListItemDto>> GetAdsByUser(int userId, GetAdsWithSoldDto getAdsDto)
     {
         var query = _dbContext.Ads
             .Include(a => a.Category)
