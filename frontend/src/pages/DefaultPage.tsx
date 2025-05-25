@@ -44,7 +44,7 @@ function DefaultPage() {
         <Link to="/adform">
           <Button>Форма объявления</Button>
         </Link>
-        <Link to="/adform">
+        <Link to="/adfeed">
           <Button>Лента объявлений</Button>
         </Link>
         <p>
