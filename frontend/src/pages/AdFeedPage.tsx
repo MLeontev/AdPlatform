@@ -55,8 +55,8 @@ function AdFeedPage() {
 
   const fetchAds = async () => {
     const queryParams = {
-      pageNumber: searchParams.get('pageNumber'),
-      pageSize: searchParams.get('pageSize'),
+      pageNumber: currentPage?.page,
+      pageSize: currentPage?.pageSize,
       searchQuery: searchQuery,
       cityIds: selectedCities,
       categoryId: selectedCategory,
