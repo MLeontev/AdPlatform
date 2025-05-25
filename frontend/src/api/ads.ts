@@ -17,14 +17,11 @@ export const postAd = async (formData: Ad): Promise<number> => {
       formDataToSend.append('Files', formData.imagesLocal[i]);
     }
 
-    console.log(formDataToSend);
     const response = await axios.post('/api/ad', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-
-    console.log('Успешно отправлено:', response.data);
     return response.data;
   } catch (error) {
     console.error('Ошибка при отправке:', error);
@@ -35,7 +32,6 @@ export const postAd = async (formData: Ad): Promise<number> => {
 export const getAd = async (id: number): Promise<AdDto | null> => {
   try {
     const response = await axios.get<AdDto>('/api/ad/' + id);
-    console.log('Успешно получено.');
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении:', error);
@@ -46,14 +42,11 @@ export const getAd = async (id: number): Promise<AdDto | null> => {
 export const getAds = async (
   params: URLSearchParams,
 ): Promise<PagedListDto | null> => {
-  console.log(params);
   return await axios
     .get<PagedListDto>('/api/ad', {
       params: params,
     })
     .then((response) => {
-      console.log('Успешно получено.');
-      console.log(response.request.responseURL);
       return response.data;
     })
     .catch((error) => {

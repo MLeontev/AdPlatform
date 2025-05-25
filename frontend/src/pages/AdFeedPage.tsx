@@ -20,8 +20,6 @@ function AdFeedPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState<PagedListDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCities, setSelectedCities] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -33,8 +31,6 @@ function AdFeedPage() {
   useEffect(() => {
     const params = GetAdsParams(searchParams);
 
-    if (params.pageNumber) setPage(params.pageNumber);
-    if (params.pageSize) setPageSize(params.pageSize);
     if (params.categoryId) setSelectedCategory(params.categoryId);
     if (params.cityIds?.length) setSelectedCities(params.cityIds);
     if (params.searchQuery) setSearchQuery(params.searchQuery);
@@ -59,8 +55,8 @@ function AdFeedPage() {
 
   const fetchAds = async () => {
     const queryParams = {
-      pageNumber: page,
-      pageSize: pageSize,
+      pageNumber: searchParams.get('pageNumber'),
+      pageSize: searchParams.get('pageSize'),
       searchQuery: searchQuery,
       cityIds: selectedCities,
       categoryId: selectedCategory,
