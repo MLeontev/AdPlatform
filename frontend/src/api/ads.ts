@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Ad } from '@/types/ad.ts';
 import { AdDto } from '@/types/DTOs/adDto.ts';
+import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
 
 export const postAd = async (formData: Ad): Promise<number> => {
   try {
@@ -16,14 +17,11 @@ export const postAd = async (formData: Ad): Promise<number> => {
       formDataToSend.append('Files', formData.imagesLocal[i]);
     }
 
-    console.log(formDataToSend);
     const response = await axios.post('/api/ad', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-
-    console.log('Успешно отправлено:', response.data);
     return response.data;
   } catch (error) {
     console.error('Ошибка при отправке:', error);
@@ -34,12 +32,27 @@ export const postAd = async (formData: Ad): Promise<number> => {
 export const getAd = async (id: number): Promise<AdDto | null> => {
   try {
     const response = await axios.get<AdDto>('/api/ad/' + id);
-    console.log('Успешно получено.');
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении:', error);
     return null;
   }
+};
+
+export const getAds = async (
+  params: URLSearchParams,
+): Promise<PagedListDto | null> => {
+  return await axios
+    .get<PagedListDto>('/api/ad', {
+      params: params,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Ошибка при получении:', error);
+      return null;
+    });
 };
 
 export const putAd = async (id: number, formData: Ad): Promise<void> => {

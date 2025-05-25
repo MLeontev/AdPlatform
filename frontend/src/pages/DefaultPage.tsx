@@ -44,6 +44,9 @@ function DefaultPage() {
         <Link to="/adform">
           <Button>Форма объявления</Button>
         </Link>
+        <Link to="/adform">
+          <Button>Лента объявлений</Button>
+        </Link>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

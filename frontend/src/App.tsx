@@ -5,9 +5,11 @@ import '@/styles/App.css';
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+      <div className="App max-w-[1920px] m-auto">
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </div>
     </>
   );
 }
