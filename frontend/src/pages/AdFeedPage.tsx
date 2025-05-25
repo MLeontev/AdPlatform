@@ -75,8 +75,8 @@ function AdFeedPage() {
   };
 
   return (
-    <div>
-      <div className="flex justify-center h-screen">
+    <div className="min-w-[900px]">
+      <div className="flex justify-center h-screen mr-[250px]">
         <div className="flex flex-col relative right-4 w-[250px]">
           <SingleCategorySelector
             selectedCategory={selectedCategory}
