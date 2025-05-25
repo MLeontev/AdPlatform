@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Ad } from '@/types/ad.ts';
 import { AdDto } from '@/types/DTOs/adDto.ts';
+import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
 
 export const postAd = async (formData: Ad): Promise<number> => {
   try {
@@ -40,6 +41,25 @@ export const getAd = async (id: number): Promise<AdDto | null> => {
     console.error('Ошибка при получении:', error);
     return null;
   }
+};
+
+export const getAds = async (
+  params: URLSearchParams,
+): Promise<PagedListDto | null> => {
+  console.log(params);
+  return await axios
+    .get<PagedListDto>('/api/ad', {
+      params: params,
+    })
+    .then((response) => {
+      console.log('Успешно получено.');
+      console.log(response.request.responseURL);
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Ошибка при получении:', error);
+      return null;
+    });
 };
 
 export const putAd = async (id: number, formData: Ad): Promise<void> => {
