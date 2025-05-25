@@ -122,7 +122,7 @@ function AdFeedPage() {
           ) : (
             <LoadingSpinner text="Пожалуйста, подождите..." className="my-3" />
           )}
-          <div className="flex">
+          <div className="flex mt-auto">
             {currentPage !== null && (
               <PageSizeSelector pageSize={currentPage.pageSize} />
             )}

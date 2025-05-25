@@ -16,24 +16,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-
-const cities = [
-  'Москва',
-  'Санкт-Петербург',
-  'Новосибирск',
-  'Екатеринбург',
-  'Казань',
-  'Нижний Новгород',
-  'Челябинск',
-  'Самара',
-  'Омск',
-  'Ростов-на-Дону',
-  'Уфа',
-  'Красноярск',
-  'Пермь',
-  'Воронеж',
-  'Волгоград',
-];
+import { useAppData } from '@/components/DataProvider.tsx';
+import { City } from '@/types/city.ts';
 
 interface MultiCitySelectorProps {
   selectedCities?: number[];
@@ -46,6 +30,7 @@ export function MultiCitySelector({
   onCitiesChange,
   className,
 }: MultiCitySelectorProps) {
+  const data = useAppData();
   const [internalSelectedCities, setInternalSelectedCities] = useState<
     number[]
   >(externalSelectedCities);
@@ -56,25 +41,37 @@ export function MultiCitySelector({
     setInternalSelectedCities(externalSelectedCities);
   }, [externalSelectedCities]);
 
-  const filteredCities = cities
-    .map((city, index) => ({ index, city }))
-    .filter(({ city }) =>
-      city.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+  if (!data) {
+    return <div>Загрузка данных...</div>;
+  }
 
-  const handleSelect = (index: number) => {
-    const newSelected = internalSelectedCities.includes(index)
-      ? internalSelectedCities.filter((i) => i !== index)
-      : [...internalSelectedCities, index];
+  const cities: City[] =
+    data.cities?.map((city) => ({
+      id: city.id,
+      name: city.name,
+    })) || [];
+
+  const filteredCities = cities.filter((city) =>
+    city.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const handleSelect = (id: number) => {
+    const newSelected = internalSelectedCities.includes(id)
+      ? internalSelectedCities.filter((i) => i !== id)
+      : [...internalSelectedCities, id];
 
     setInternalSelectedCities(newSelected);
     onCitiesChange?.(newSelected);
   };
 
-  const removeCity = (index: number) => {
-    const newSelected = internalSelectedCities.filter((i) => i !== index);
+  const removeCity = (id: number) => {
+    const newSelected = internalSelectedCities.filter((i) => i !== id);
     setInternalSelectedCities(newSelected);
     onCitiesChange?.(newSelected);
+  };
+
+  const getCityNameById = (id: number) => {
+    return cities.find((city) => city.id === id)?.name || '';
   };
 
   return (
@@ -108,21 +105,21 @@ export function MultiCitySelector({
             <CommandGroup>
               <ScrollArea className="h-72">
                 <CommandList>
-                  {filteredCities.map(({ index, city }) => (
+                  {filteredCities.map((city) => (
                     <CommandItem
-                      key={index}
-                      value={index.toString()}
-                      onSelect={() => handleSelect(index)}
+                      key={city.id}
+                      value={city.id.toString()}
+                      onSelect={() => handleSelect(city.id)}
                     >
                       <Check
                         className={cn(
                           'mr-2 h-4 w-4',
-                          internalSelectedCities.includes(index)
+                          internalSelectedCities.includes(city.id)
                             ? 'opacity-100'
                             : 'opacity-0',
                         )}
                       />
-                      {city}
+                      {city.name}
                     </CommandItem>
                   ))}
                 </CommandList>
@@ -137,17 +134,17 @@ export function MultiCitySelector({
         <ScrollArea className="h-72">
           <div className="space-y-2">
             {internalSelectedCities.length > 0 ? (
-              internalSelectedCities.map((index) => (
+              internalSelectedCities.map((id) => (
                 <div
-                  key={index}
+                  key={id}
                   className="flex items-center justify-between p-2 border rounded"
                 >
-                  <span>{cities[index]}</span>
+                  <span>{getCityNameById(id)}</span>
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-6 w-6 p-0 text-muted-foreground"
-                    onClick={() => removeCity(index)}
+                    onClick={() => removeCity(id)}
                   >
                     <X className="h-4 w-4" />
                   </Button>
