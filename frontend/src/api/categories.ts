@@ -5,7 +5,6 @@ export const getCategories = async (): Promise<Category[] | null> => {
   return await axios
     .get<Category[]>('/api/Category')
     .then((response) => {
-      console.log(response.data);
       return response.data;
     })
     .catch((error) => {
