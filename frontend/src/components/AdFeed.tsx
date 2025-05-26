@@ -9,7 +9,7 @@ import { MultiCitySelector } from '@/components/MultiCitySelector.tsx';
 import { SingleCategorySelector } from '@/components/SingleCategorySelector.tsx';
 import { Label } from '@radix-ui/react-label';
 import { PriceRangeSelector } from '@/components/PriceRangeeSelector.tsx';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import qs from 'qs';
 import { GetAdsParams } from '@/components/GetAdsParams.ts';
 import { DataPagination } from '@/components/DataPagination.tsx';
@@ -114,7 +114,9 @@ function AdFeed() {
             currentPage?.totalCount !== undefined &&
             currentPage?.totalCount > 0 ? (
               currentPage?.items.map((ad: AdListItemDto) => (
-                <AdFeedElement key={ad.id} ad={ad} onClick={onClick} />
+                <Link key={ad.id} to={`/adform?id=${ad.id}`}>
+                  <AdFeedElement ad={ad} onClick={onClick} />
+                </Link>
               ))
             ) : (
               <Label className="m-2">Объявления не найдены</Label>

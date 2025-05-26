@@ -13,23 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Category } from '@/types/category.ts';
-import { City } from '@/types/city.ts';
 import { AdImage } from '@/types/adImage.ts';
+import { useAppData } from '@/components/DataProvider.tsx';
 
 interface AdFormProps {
   initialData?: Ad | null;
   onSubmit: (data: Ad, id?: number) => void;
-  categories: Category[];
-  cities: City[];
 }
 
-export const AdForm: React.FC<AdFormProps> = ({
-  initialData,
-  onSubmit,
-  categories,
-  cities,
-}) => {
+export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
+  const data = useAppData();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploadedImages, setUploadedImages] = useState<AdImage[]>([]);
@@ -51,12 +44,14 @@ export const AdForm: React.FC<AdFormProps> = ({
       isSold: false,
     },
   );
+  const categories = data?.categories || [];
+  const cities = data?.cities || [{ id: 1, name: 'City' }];
 
   useEffect(() => {
     if (initialData) {
       setUploadedImages(initialData.imagesUploaded);
     }
-  }, []);
+  }, [initialData]);
 
   useEffect(() => {
     const objectUrls = imageFiles.map((file) => URL.createObjectURL(file));
@@ -130,7 +125,7 @@ export const AdForm: React.FC<AdFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="ad-form flex flex-col justify-between items-start w-fit h-fit bg-white p-6 rounded-lg shadow-md mb-8 mt-4 "
+      className="ad-form flex flex-col justify-between items-start w-fit h-fit bg-white p-6 rounded-lg mb-8 mt-4 mx-auto w-fit"
     >
       <Label className="ml-[10px] text-3xl font-bold text-center mb-8 mt-4">
         {initialData ? 'Редактирование объявления' : 'Создание объявления'}
