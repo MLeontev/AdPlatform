@@ -125,7 +125,7 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="ad-form flex flex-col justify-between items-start w-fit h-fit bg-white p-6 rounded-lg mb-8 mt-4 mx-auto w-fit"
+      className="ad-form flex flex-col justify-between items-start w-fit h-fit p-6 rounded-lg mb-8 mt-4 mx-auto w-fit"
     >
       <Label className="ml-[10px] text-3xl font-bold text-center mb-8 mt-4">
         {initialData ? 'Редактирование объявления' : 'Создание объявления'}
