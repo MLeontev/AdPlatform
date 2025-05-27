@@ -114,7 +114,7 @@ function AdFeed() {
             currentPage?.totalCount !== undefined &&
             currentPage?.totalCount > 0 ? (
               currentPage?.items.map((ad: AdListItemDto) => (
-                <Link key={ad.id} to={`/adform?id=${ad.id}`}>
+                <Link key={ad.id} to={`/ad?id=${ad.id}`}>
                   <AdFeedElement ad={ad} onClick={onClick} />
                 </Link>
               ))
