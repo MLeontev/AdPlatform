@@ -6,7 +6,7 @@ import { FullPageLoader } from '@/components/LoadingSpinner.tsx';
 
 interface AdFormInitializedProps {
   id?: number;
-  onSubmit: () => void;
+  onSubmit?: () => void;
 }
 
 export function AdFormInitialized({ id, onSubmit }: AdFormInitializedProps) {
@@ -43,14 +43,14 @@ export function AdFormInitialized({ id, onSubmit }: AdFormInitializedProps) {
 
   const PostAd = async (formData: Ad) => {
     await postAd({ ...formData });
-    onSubmit();
+    if (onSubmit) onSubmit();
   };
 
   const PutAd = async (formData: Ad, id?: number) => {
     if (id) {
       await putAd(id, { ...formData });
     }
-    onSubmit();
+    if (onSubmit) onSubmit();
   };
 
   return (

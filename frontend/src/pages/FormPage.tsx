@@ -22,8 +22,10 @@ export function FormPage() {
       {!isLoading ? (
         <AdFormInitialized
           id={id}
-          onSubmit={() => {
-            navigate(-1);
+          onSubmit={async () => {
+            setIsLoading(true);
+            await new Promise((r) => setTimeout(r, 1000));
+            navigate(0);
           }}
         />
       ) : (

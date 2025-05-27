@@ -2,31 +2,36 @@ import axios from 'axios';
 import { Ad } from '@/types/ad.ts';
 import { AdDto } from '@/types/DTOs/adDto.ts';
 import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
+import { toast } from 'sonner';
 
 export const postAd = async (formData: Ad): Promise<number> => {
-  try {
-    const formDataToSend = new FormData();
+  const formDataToSend = new FormData();
 
-    formDataToSend.append('Title', formData.title);
-    formDataToSend.append('Description', formData.description);
-    formDataToSend.append('Price', formData.price.toString());
-    formDataToSend.append('CategoryId', formData.categoryId);
-    formDataToSend.append('CityId', formData.cityId);
+  formDataToSend.append('Title', formData.title);
+  formDataToSend.append('Description', formData.description);
+  formDataToSend.append('Price', formData.price.toString());
+  formDataToSend.append('CategoryId', formData.categoryId);
+  formDataToSend.append('CityId', formData.cityId);
 
-    for (let i = 0; i < formData.imagesLocal.length; i++) {
-      formDataToSend.append('Files', formData.imagesLocal[i]);
-    }
+  for (let i = 0; i < formData.imagesLocal.length; i++) {
+    formDataToSend.append('Files', formData.imagesLocal[i]);
+  }
 
-    const response = await axios.post('/api/ad', formDataToSend, {
+  return await axios
+    .post('/api/ad', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+    })
+    .then((response) => {
+      toast('✅ Объявление создано');
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Ошибка при отправке:', error);
+      toast('❌ Не удалось создать объявление');
+      return -1;
     });
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при отправке:', error);
-    return -1;
-  }
 };
 
 export const getAd = async (id: number): Promise<AdDto | null> => {
@@ -35,6 +40,7 @@ export const getAd = async (id: number): Promise<AdDto | null> => {
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении:', error);
+    toast('❌ Не удалось получить объявление');
     return null;
   }
 };
@@ -51,6 +57,7 @@ export const getAds = async (
     })
     .catch((error) => {
       console.error('Ошибка при получении:', error);
+      toast('❌ Не удалось получить объявления');
       return null;
     });
 };
@@ -84,7 +91,9 @@ export const putAd = async (id: number, formData: Ad): Promise<void> => {
         'Content-Type': 'multipart/form-data',
       },
     });
+    toast('✅ Объявление обновлено');
   } catch (error) {
     console.error('Ошибка при получении:', error);
+    toast('❌ Не удалось обновить объявление');
   }
 };

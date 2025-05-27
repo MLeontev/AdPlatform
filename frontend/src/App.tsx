@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRouter from './components/AppRouter';
 import '@/styles/App.css';
 import { DataProvider } from '@/components/DataProvider.tsx';
+import { Toaster } from 'sonner';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
             <AppRouter />
           </BrowserRouter>
         </DataProvider>
+        <Toaster />
       </div>
     </>
   );
