@@ -13,7 +13,7 @@ public class CreateAdDto
     public string Description { get; set; } = string.Empty;
 
     [Required]
-    [Range(1, 999999999)]
+    [Range(0, 999999999)]
     public int Price { get; set; }
 
     [Required]
