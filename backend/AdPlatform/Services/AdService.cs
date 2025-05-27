@@ -91,6 +91,15 @@ public class AdService : IAdService
             avatarSrc = await _storageService.GetFileUrlAsync(ad.User.AvatarSrc, _minioOptions.AvatarsBucketName);
         }
 
+        var links = await _dbContext.UserLinks
+            .Where(l => l.UserId == ad.UserId)
+            .Select(l => new UserLinkDto
+            {
+                Platform = l.Platform,
+                Link = l.Link
+            })
+            .ToListAsync();
+
         return new AdDto
         {
             Id = ad.Id,
@@ -113,7 +122,8 @@ public class AdService : IAdService
                 Email = ad.User.Email!,
                 Phone = ad.User.PhoneNumber!,
                 AvatarSrc = avatarSrc,
-                RegistrationDate = ad.User.RegistrationDate
+                RegistrationDate = ad.User.RegistrationDate,
+                Links = links
             }
         };
     }

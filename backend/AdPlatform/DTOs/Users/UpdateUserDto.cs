@@ -21,4 +21,6 @@ public class UpdateUserDto
     public string Phone { get; set; } = string.Empty;
 
     public IFormFile? Avatar { get; set; }
+
+    public List<UpdateUserLinkDto> Links { get; set; } = [];
 }

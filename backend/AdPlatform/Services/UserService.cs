@@ -1,4 +1,5 @@
 using AdPlatform.Authorization;
+using AdPlatform.Data;
 using AdPlatform.DTOs.Users;
 using AdPlatform.interfaces;
 using AdPlatform.Models;
@@ -16,19 +17,22 @@ public class UserService : IUserService
     private readonly JwtOptions _jwtOptions;
     private readonly MinioOptions _minioOptions;
     private readonly IStorageService _storageService;
+    private readonly AppDbContext _dbContext;
 
     public UserService(
         UserManager<User> userManager,
         IJwtProvider jwtProvider,
         IOptions<JwtOptions> jwtOptions,
         IOptions<MinioOptions> minioOptions,
-        IStorageService storageService)
+        IStorageService storageService,
+        AppDbContext dbContext)
     {
         _userManager = userManager;
         _jwtProvider = jwtProvider;
         _jwtOptions = jwtOptions.Value;
         _minioOptions = minioOptions.Value;
         _storageService = storageService;
+        _dbContext = dbContext;
     }
 
     public async Task<AuthResult> RegisterUser(RegisterUserDto registerDto)
@@ -155,6 +159,15 @@ public class UserService : IUserService
             avatarSrc = await _storageService.GetFileUrlAsync(user.AvatarSrc, _minioOptions.AvatarsBucketName);
         }
 
+        var links = await _dbContext.UserLinks
+            .Where(l => l.UserId == user.Id)
+            .Select(l => new UserLinkDto
+            {
+                Platform = l.Platform,
+                Link = l.Link
+            })
+            .ToListAsync();
+
         return new UserDto
         {
             Id = user.Id,
@@ -163,7 +176,8 @@ public class UserService : IUserService
             Email = user.Email!,
             Phone = user.PhoneNumber!,
             AvatarSrc = avatarSrc,
-            RegistrationDate = user.RegistrationDate
+            RegistrationDate = user.RegistrationDate,
+            Links = links
         };
     }
 
@@ -198,13 +212,36 @@ public class UserService : IUserService
             user.AvatarSrc = fileName;
         }
 
+        var oldLinks = _dbContext.UserLinks.Where(l => l.UserId == user.Id);
+        _dbContext.UserLinks.RemoveRange(oldLinks);
+
+        foreach (var linkDto in dto.Links)
+        {
+            _dbContext.UserLinks.Add(new UserLink
+            {
+                UserId = user.Id,
+                Platform = linkDto.Platform,
+                Link = linkDto.Link
+            });
+        }
+
         await _userManager.UpdateAsync(user);
+        await _dbContext.SaveChangesAsync();
 
         var avatarSrc = "";
         if (!string.IsNullOrEmpty(user.AvatarSrc))
         {
             avatarSrc = await _storageService.GetFileUrlAsync(user.AvatarSrc, _minioOptions.AvatarsBucketName);
         }
+
+        var links = await _dbContext.UserLinks
+            .Where(l => l.UserId == user.Id)
+            .Select(l => new UserLinkDto
+            {
+                Platform = l.Platform,
+                Link = l.Link
+            })
+            .ToListAsync();
 
         return new UserDto
         {
@@ -214,7 +251,8 @@ public class UserService : IUserService
             Email = user.Email!,
             Phone = user.PhoneNumber!,
             AvatarSrc = avatarSrc,
-            RegistrationDate = user.RegistrationDate
+            RegistrationDate = user.RegistrationDate,
+            Links = links
         };
     }
 }

@@ -14,4 +14,6 @@ public class User : IdentityUser<int>
 
     public List<Ad> Ads { get; set; } = [];
     public List<Favourites> Favourites { get; set; } = [];
+
+    public List<UserLink> Links { get; set; } = [];
 }

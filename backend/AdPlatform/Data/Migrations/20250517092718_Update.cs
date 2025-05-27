@@ -1,9 +1,8 @@
-﻿using System;
+﻿#nullable disable
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
-namespace AdPlatform.Migrations
+namespace AdPlatform.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Update : Migration

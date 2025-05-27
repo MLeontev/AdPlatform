@@ -16,6 +16,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Category> Categories { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<Favourites> Favourites { get; set; }
+    public DbSet<UserLink> UserLinks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
