@@ -16,19 +16,8 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-
-const categories = [
-  'Электроника',
-  'Одежда',
-  'Продукты питания',
-  'Дом и сад',
-  'Красота',
-  'Спорт',
-  'Авто товары',
-  'Детские товары',
-  'Книги',
-  'Зоотовары',
-];
+import { useAppData } from './DataProvider';
+import { Category } from '@/types/category.ts';
 
 interface SingleCategorySelectorProps {
   selectedCategory?: number | null;
@@ -41,6 +30,7 @@ export function SingleCategorySelector({
   onCategoryChange,
   className,
 }: SingleCategorySelectorProps) {
+  const data = useAppData();
   const [internalSelectedCategory, setInternalSelectedCategory] = useState<
     number | null
   >(externalSelectedCategory);
@@ -51,14 +41,22 @@ export function SingleCategorySelector({
     setInternalSelectedCategory(externalSelectedCategory);
   }, [externalSelectedCategory]);
 
-  const filteredCategories = categories
-    .map((category, index) => ({ index, category }))
-    .filter(({ category }) =>
-      category.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+  if (!data) {
+    return <div className={className}>Загрузка категорий...</div>;
+  }
 
-  const handleSelect = (index: number) => {
-    const newSelected = index === internalSelectedCategory ? null : index;
+  const categories: Category[] =
+    data.categories?.map((category) => ({
+      id: category.id,
+      name: category.name,
+    })) || [];
+
+  const filteredCategories = categories.filter(({ name }) =>
+    name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const handleSelect = (id: number) => {
+    const newSelected = id === internalSelectedCategory ? null : id;
     setInternalSelectedCategory(newSelected);
     onCategoryChange?.(newSelected);
   };
@@ -66,6 +64,11 @@ export function SingleCategorySelector({
   const clearSelection = () => {
     setInternalSelectedCategory(null);
     onCategoryChange?.(null);
+  };
+
+  const getCategoryNameById = (id: number | null) => {
+    if (id === null) return '';
+    return categories.find((category) => category.id === id)?.name || '';
   };
 
   return (
@@ -82,7 +85,7 @@ export function SingleCategorySelector({
           >
             <span className="truncate">
               {internalSelectedCategory !== null
-                ? categories[internalSelectedCategory]
+                ? getCategoryNameById(internalSelectedCategory)
                 : 'Выберите категорию...'}
             </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -99,21 +102,21 @@ export function SingleCategorySelector({
             <CommandGroup>
               <ScrollArea className="h-72">
                 <CommandList>
-                  {filteredCategories.map(({ index, category }) => (
+                  {filteredCategories.map(({ id, name }) => (
                     <CommandItem
-                      key={index}
-                      value={index.toString()}
-                      onSelect={() => handleSelect(index)}
+                      key={id}
+                      value={id.toString()}
+                      onSelect={() => handleSelect(id)}
                     >
                       <Check
                         className={cn(
                           'mr-2 h-4 w-4',
-                          internalSelectedCategory === index
+                          internalSelectedCategory === id
                             ? 'opacity-100'
                             : 'opacity-0',
                         )}
                       />
-                      {category}
+                      {name}
                     </CommandItem>
                   ))}
                 </CommandList>
@@ -125,7 +128,7 @@ export function SingleCategorySelector({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium ">Выбранная категория:</h3>
+          <h3 className="text-sm font-medium">Выбранная категория:</h3>
           {internalSelectedCategory !== null && (
             <Button
               variant="ghost"
@@ -139,7 +142,7 @@ export function SingleCategorySelector({
         </div>
         {internalSelectedCategory !== null ? (
           <div className="p-3 border rounded-md bg-muted/50">
-            {categories[internalSelectedCategory]}
+            {getCategoryNameById(internalSelectedCategory)}
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">Категория не выбрана</p>

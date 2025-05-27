@@ -79,13 +79,11 @@ export const putAd = async (id: number, formData: Ad): Promise<void> => {
       }
     }
 
-    console.log(formDataToSend);
-    const response = await axios.put<AdDto>('/api/ad/' + id, formDataToSend, {
+    await axios.put<AdDto>('/api/ad/' + id, formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log('Успешно получено:', response.data);
   } catch (error) {
     console.error('Ошибка при получении:', error);
   }
