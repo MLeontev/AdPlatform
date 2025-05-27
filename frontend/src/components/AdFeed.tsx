@@ -15,6 +15,7 @@ import { GetAdsParams } from '@/components/GetAdsParams.ts';
 import { DataPagination } from '@/components/DataPagination.tsx';
 import { PageSizeSelector } from '@/components/PageSizeSelector.tsx';
 import { LoadingSpinner } from '@/components/LoadingSpinner.tsx';
+import { Card } from '@/components/ui/card.tsx';
 
 function AdFeed() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -78,21 +79,26 @@ function AdFeed() {
     <div className="min-w-[900px]">
       <div className="flex justify-center h-screen mr-[250px]">
         <div className="flex flex-col relative right-4 w-[250px]">
-          <SingleCategorySelector
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            className="rounded-xl border-1 border-gray-300 shadow-md w-full max-w-xs p-4 space-y-4 mb-3"
-          />
-          <MultiCitySelector
-            selectedCities={selectedCities}
-            onCitiesChange={setSelectedCities}
-            className="rounded-xl border-1 border-gray-300 shadow-md w-full max-w-xs p-4 space-y-4 mb-3 min-h-[300px]"
-          />
-          <PriceRangeSelector
-            value={priceRange}
-            onValueChange={setPriceRange}
-            className="rounded-xl border-1 border-gray-300 p-4 shadow-md mb-3"
-          />
+          <Card className="max-w-xs p-4 space-y-4 mb-3">
+            <SingleCategorySelector
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              className=" w-full"
+            />
+          </Card>
+          <Card className="max-w-xs p-4 space-y-4 mb-3">
+            <MultiCitySelector
+              selectedCities={selectedCities}
+              onCitiesChange={setSelectedCities}
+              className="w-full min-h-[300px]"
+            />
+          </Card>
+          <Card className="max-w-xs p-4 space-y-4 mb-3">
+            <PriceRangeSelector
+              value={priceRange}
+              onValueChange={setPriceRange}
+            />
+          </Card>
           <Button className="m-1 rounded-2xl" onClick={onSearch}>
             Подтвердить
           </Button>
