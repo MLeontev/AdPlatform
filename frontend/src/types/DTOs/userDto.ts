@@ -1,3 +1,5 @@
+import { UserLinkDto } from '@/types/DTOs/userLinkDto.ts';
+
 export interface UserDto {
   id: number;
   name: string;
@@ -6,4 +8,5 @@ export interface UserDto {
   phone: string;
   avatarSrc: string;
   registrationDate: string;
+  links: UserLinkDto[];
 }
