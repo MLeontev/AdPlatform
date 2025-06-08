@@ -1,0 +1,45 @@
+﻿name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SERVER_HOSTNAME: server.com
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Create unified .env file
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASS=${{ secrets.DB_PASS }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "BACKEND_IMAGE=backend:latest" >> .env
+          echo "FRONTEND_IMAGE=frontend:latest" >> .env
+
+      - name: Copy project to server
+        run: |
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ env.SERVER_HOSTNAME }}:/opt/ad_platform/production/
+
+      - name: Deploy with docker compose
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ env.SERVER_HOSTNAME }} << 'EOF'
+            cd /opt/todo/production
+            docker compose down --remove-orphans --volumes
+            docker compose up -d --build
+            docker ps
+          EOF
