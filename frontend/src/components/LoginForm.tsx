@@ -1,29 +1,29 @@
-'use client';
-
-import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 const LoginForm = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // здесь обработка логина, например отправка на сервер
-    console.log('Вход с:', form);
+  const onSubmit = (data: FormData) => {
+    // обработка логина, например отправка на сервер
+    console.log('Вход с:', data);
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col items-start justify-between w-fit h-fit p-6 rounded-lg border shadow-md mx-auto mt-10"
     >
       <Label className="text-2xl font-bold mb-6 ml-[10px]">Вход</Label>
@@ -32,27 +32,49 @@ const LoginForm = () => {
       <Input
         className="m-[10px] w-[300px]"
         type="email"
-        name="email"
-        value={form.email}
-        onChange={handleChange}
         placeholder="example@mail.com"
-        required
+        {...register('email', {
+          required: 'Email обязателен',
+          pattern: {
+            value:
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: 'Введите корректный email',
+          },
+        })}
       />
+      {errors.email && (
+        <p className="text-red-500 ml-[10px] text-sm">{errors.email.message}</p>
+      )}
 
       <Label className="ml-[10px]">Пароль</Label>
       <Input
         className="m-[10px] w-[300px]"
         type="password"
-        name="password"
-        value={form.password}
-        onChange={handleChange}
         placeholder="Ваш пароль"
-        required
+        {...register('password', {
+          required: 'Пароль обязателен',
+          minLength: {
+            value: 6,
+            message: 'Минимум 6 символов',
+          },
+        })}
       />
+      {errors.password && (
+        <p className="text-red-500 ml-[10px] text-sm">{errors.password.message}</p>
+      )}
 
-      <Button type="submit" className="m-[10px]">
+      <Button type="submit" className="m-[10px] w-full">
         Войти
       </Button>
+
+      <div className="flex justify-center mt-4 w-full">
+        <p className="text-gray-700">
+          Нет аккаунта —{' '}
+          <Link to="/auth" className="text-blue-600 hover:underline">
+            зарегистрируйтесь
+          </Link>
+        </p>
+      </div>
     </form>
   );
 };
