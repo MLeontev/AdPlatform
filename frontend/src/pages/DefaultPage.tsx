@@ -1,8 +1,8 @@
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import reactLogo from '../assets/react.svg';
 import viteLogo from '/vite.svg';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 
 function DefaultPage() {
   const [count, setCount] = useState(0);
@@ -34,7 +34,7 @@ function DefaultPage() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Максим + Игорь + Максим = Серега</h1>
       <div className="card">
         <Button onClick={() => setCount((count) => count + 1)}>
           count is {count}
