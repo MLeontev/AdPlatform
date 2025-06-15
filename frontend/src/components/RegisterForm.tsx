@@ -1,45 +1,30 @@
 import { useForm } from 'react-hook-form';
+import { useState} from 'react'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-
-type RegisterFormData = {
-  name: string;
-  surname: string;
-  email: string;
-  phone: string;
-  password: string;
-};
+import { Link, useNavigate } from 'react-router-dom';
+import { RegisterDto } from '@/types/DTOs/registerDto'
+import { reg } from '@/api/auth'
 
 const RegisterForm = () => {
+  var navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterFormData>();
+    formState: { errors },
+  } = useForm<RegisterDto>();
 
-  const onSubmit = async (data: RegisterFormData) => {
-    try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Ошибка при регистрации');
-      }
-
-      const result = await response.json();
-      console.log('Успешная регистрация:', result);
-      // Можно очистить форму или показать уведомление
-    } catch (error) {
-      console.error(error);
-      // Можно показать сообщение об ошибке
+  const onSubmit = async (data: RegisterDto) => {
+    var errorMessage = await reg(data);
+    
+    if (!errorMessage){
+      navigate("/");
     }
+
+    setError(errorMessage);
   };
 
   return (
@@ -127,9 +112,13 @@ const RegisterForm = () => {
         <p className="text-red-500 ml-[10px] text-sm">{errors.password.message}</p>
       )}
 
-      <Button type="submit" className="m-[10px] w-full" disabled={isSubmitting}>
-        {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
+      <Button type="submit" className="m-[10px] w-full">
+        Зарегистрироваться
       </Button>
+
+      {error && (
+        <p className="text-red-500 ml-[10px] text-sm mt-2">{error}</p>
+      )}
 
       <div className="flex justify-center mt-4 w-full">
         <p className="text-gray-700">

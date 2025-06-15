@@ -138,15 +138,15 @@ public class UserController : ControllerBase
         }
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, [FromForm] UpdateUserDto dto)
     {
         try
         {
-            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            // if (id != userId)
-            //     return Forbid("You cannot update another user");
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            if (id != userId)
+                return Forbid("You cannot update another user");
 
             var user = await _userService.UpdateUser(id, dto);
             if (user == null) return NotFound();

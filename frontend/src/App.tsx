@@ -5,8 +5,30 @@ import { DataProvider } from '@/components/DataProvider.tsx';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/ThemeProvider.tsx';
 import { ThemeModeToggle } from '@/components/ThemeModToggle.tsx';
+import { useAuthStore } from './store/authStore';
+import { useEffect } from 'react';
+import { refreshToken } from './api/auth';
 
 function App() {
+  const setAuthData = useAuthStore((state) => state.setAuthData);
+  const logout = useAuthStore((state) => state.logout);
+
+  useEffect(() => {
+    const init = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const result = await refreshToken();
+      if (result) {
+        setAuthData(result);
+      } else {
+        logout();
+      }
+    };
+
+    init();
+  }, []);
+
   return (
     <>
       <div className="App max-w-[1920px] m-auto">

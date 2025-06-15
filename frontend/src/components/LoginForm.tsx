@@ -1,24 +1,30 @@
 import { useForm } from 'react-hook-form';
+import { useState} from 'react'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-
-type FormData = {
-  email: string;
-  password: string;
-};
+import { Link, useNavigate } from 'react-router-dom';
+import {LoginDto} from '@/types/DTOs/loginDto'
+import {login} from '@/api/auth'
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<LoginDto>();
 
-  const onSubmit = (data: FormData) => {
-    // обработка логина, например отправка на сервер
-    console.log('Вход с:', data);
+  const onSubmit = async (data: LoginDto) => {
+    var errorMessage = await login(data);
+
+    if (!errorMessage){
+      navigate("/");
+    }
+
+    setError(errorMessage);
   };
 
   return (
@@ -66,6 +72,10 @@ const LoginForm = () => {
       <Button type="submit" className="m-[10px] w-full">
         Войти
       </Button>
+
+      {error && (
+        <p className="text-red-500 ml-[10px] text-sm mt-2">{error}</p>
+      )}
 
       <div className="flex justify-center mt-4 w-full">
         <p className="text-gray-700">
