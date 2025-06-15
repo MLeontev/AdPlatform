@@ -31,7 +31,7 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
                 SameSite = SameSiteMode.None
             };
@@ -56,7 +56,7 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
                 SameSite = SameSiteMode.None
             };
@@ -85,7 +85,7 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
                 SameSite = SameSiteMode.None
             };
