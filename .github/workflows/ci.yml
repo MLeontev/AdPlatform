@@ -15,11 +15,11 @@ jobs:
 
       - name: Copy files to project directory
         run: |
-          rm -rf /root/AdPlatform/*
-          cp -r . /root/AdPlatform/
+          rm -rf /home/githubrunner/AdPlatform/*
+          cp -r . /home/githubrunner/AdPlatform/
 
       - name: Restart docker containers
         run: |
-          cd /root/AdPlatform
+          cd /home/githubrunner/AdPlatform
           docker compose down --remove-orphans
           docker compose up -d --build
