@@ -31,10 +31,11 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
-                SameSite = SameSiteMode.None
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays)
             };
+
 
             Response.Cookies.Append("RefreshToken", result.RefreshToken, cookieOptions);
 
@@ -56,10 +57,11 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
-                SameSite = SameSiteMode.None
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays)
             };
+
 
             Response.Cookies.Append("RefreshToken", result.RefreshToken, cookieOptions);
 
@@ -85,10 +87,11 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
-                SameSite = SameSiteMode.None
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays)
             };
+
 
             Response.Cookies.Append("RefreshToken", result.RefreshToken, cookieOptions);
 
