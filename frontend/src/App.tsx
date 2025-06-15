@@ -1,13 +1,13 @@
-import { BrowserRouter } from 'react-router-dom';
-import AppRouter from './components/AppRouter';
-import '@/styles/App.css';
 import { DataProvider } from '@/components/DataProvider.tsx';
-import { Toaster } from 'sonner';
-import { ThemeProvider } from '@/components/ThemeProvider.tsx';
 import { ThemeModeToggle } from '@/components/ThemeModToggle.tsx';
-import { useAuthStore } from './store/authStore';
+import { ThemeProvider } from '@/components/ThemeProvider.tsx';
+import '@/styles/App.css';
 import { useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { refreshToken } from './api/auth';
+import AppRouter from './components/AppRouter';
+import { useAuthStore } from './store/authStore';
 
 function App() {
   const setAuthData = useAuthStore((state) => state.setAuthData);

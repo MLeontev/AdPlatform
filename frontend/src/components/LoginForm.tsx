@@ -1,13 +1,15 @@
-import { useForm } from 'react-hook-form';
-import { useState} from 'react'
+import { login } from '@/api/auth';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/store/authStore';
+import { LoginDto } from '@/types/DTOs/loginDto';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import {LoginDto} from '@/types/DTOs/loginDto'
-import {login} from '@/api/auth'
 
 const LoginForm = () => {
+  const setAuthData = useAuthStore((state) => state.setAuthData);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
@@ -18,13 +20,13 @@ const LoginForm = () => {
   } = useForm<LoginDto>();
 
   const onSubmit = async (data: LoginDto) => {
-    var errorMessage = await login(data);
-
-    if (!errorMessage){
-      navigate("/");
+    const result = await login(data);
+    if (result) {
+      setAuthData(result);
+      navigate('/');
+    } else {
+      setError('Ошибка авторизации');
     }
-
-    setError(errorMessage);
   };
 
   return (
@@ -39,17 +41,16 @@ const LoginForm = () => {
         className="m-[10px] w-[300px]"
         type="email"
         placeholder="example@mail.com"
-        {...register('email', {
+        {...register('login', {
           required: 'Email обязателен',
           pattern: {
-            value:
-              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             message: 'Введите корректный email',
           },
         })}
       />
-      {errors.email && (
-        <p className="text-red-500 ml-[10px] text-sm">{errors.email.message}</p>
+      {errors.login && (
+        <p className="text-red-500 ml-[10px] text-sm">{errors.login.message}</p>
       )}
 
       <Label className="ml-[10px]">Пароль</Label>
@@ -66,16 +67,16 @@ const LoginForm = () => {
         })}
       />
       {errors.password && (
-        <p className="text-red-500 ml-[10px] text-sm">{errors.password.message}</p>
+        <p className="text-red-500 ml-[10px] text-sm">
+          {errors.password.message}
+        </p>
       )}
 
       <Button type="submit" className="m-[10px] w-full">
         Войти
       </Button>
 
-      {error && (
-        <p className="text-red-500 ml-[10px] text-sm mt-2">{error}</p>
-      )}
+      {error && <p className="text-red-500 ml-[10px] text-sm mt-2">{error}</p>}
 
       <div className="flex justify-center mt-4 w-full">
         <p className="text-gray-700">

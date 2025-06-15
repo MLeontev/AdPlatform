@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { refreshToken }from '../auth'
+import { refreshToken } from '../auth';
 
 const api = axios.create({
   withCredentials: true,
-  baseURL: '/api',
+  baseURL: '/',
 });
 
 api.interceptors.request.use((config) => {
@@ -31,7 +31,7 @@ api.interceptors.response.use(
       }
     }
     throw error;
-  }
+  },
 );
 
 export default api;

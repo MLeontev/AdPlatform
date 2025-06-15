@@ -75,6 +75,7 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IStorageService, MinioStorageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IFavouritesService, FavouritesService>();
+builder.Services.AddScoped<ICityService, CityService>();
 
 var app = builder.Build();
 

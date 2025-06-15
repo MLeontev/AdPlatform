@@ -1,14 +1,16 @@
-import { useForm } from 'react-hook-form';
-import { useState} from 'react'
+import { reg } from '@/api/auth';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/store/authStore';
+import { RegisterDto } from '@/types/DTOs/registerDto';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { RegisterDto } from '@/types/DTOs/registerDto'
-import { reg } from '@/api/auth'
 
 const RegisterForm = () => {
-  var navigate = useNavigate();
+  const setAuthData = useAuthStore((state) => state.setAuthData);
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -18,13 +20,13 @@ const RegisterForm = () => {
   } = useForm<RegisterDto>();
 
   const onSubmit = async (data: RegisterDto) => {
-    var errorMessage = await reg(data);
-    
-    if (!errorMessage){
-      navigate("/");
+    const result = await reg(data);
+    if (result) {
+      setAuthData(result);
+      navigate('/');
+    } else {
+      setError('Ошибка регистрации');
     }
-
-    setError(errorMessage);
   };
 
   return (
@@ -59,7 +61,9 @@ const RegisterForm = () => {
         placeholder="Фамилия"
       />
       {errors.surname && (
-        <p className="text-red-500 ml-[10px] text-sm">{errors.surname.message}</p>
+        <p className="text-red-500 ml-[10px] text-sm">
+          {errors.surname.message}
+        </p>
       )}
 
       <Label className="ml-[10px]">Email</Label>
@@ -69,8 +73,7 @@ const RegisterForm = () => {
         {...register('email', {
           required: 'Email обязателен',
           pattern: {
-            value:
-              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             message: 'Введите корректный email',
           },
         })}
@@ -109,16 +112,16 @@ const RegisterForm = () => {
         placeholder="Ваш пароль"
       />
       {errors.password && (
-        <p className="text-red-500 ml-[10px] text-sm">{errors.password.message}</p>
+        <p className="text-red-500 ml-[10px] text-sm">
+          {errors.password.message}
+        </p>
       )}
 
       <Button type="submit" className="m-[10px] w-full">
         Зарегистрироваться
       </Button>
 
-      {error && (
-        <p className="text-red-500 ml-[10px] text-sm mt-2">{error}</p>
-      )}
+      {error && <p className="text-red-500 ml-[10px] text-sm mt-2">{error}</p>}
 
       <div className="flex justify-center mt-4 w-full">
         <p className="text-gray-700">
