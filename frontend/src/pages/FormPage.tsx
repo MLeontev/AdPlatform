@@ -1,7 +1,7 @@
 import { AdFormInitialized } from '@/components/AdFormInitialized.tsx';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { FullPageLoader } from '@/components/LoadingSpinner.tsx';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export function FormPage() {
   const [searchQuery] = useSearchParams();
@@ -22,10 +22,10 @@ export function FormPage() {
       {!isLoading ? (
         <AdFormInitialized
           id={id}
-          onSubmit={async () => {
+          onSubmit={async (adId) => {
             setIsLoading(true);
             await new Promise((r) => setTimeout(r, 1000));
-            navigate(0);
+            navigate(`/ad?id=${adId}`);
           }}
         />
       ) : (

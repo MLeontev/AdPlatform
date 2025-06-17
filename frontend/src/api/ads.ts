@@ -17,21 +17,30 @@ export const postAd = async (formData: Ad): Promise<number> => {
     formDataToSend.append('Files', formData.imagesLocal[i]);
   }
 
-  return await api
-    .post('/api/ad', formDataToSend, {
+  try {
+    const response = await api.post('/api/ad', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    })
-    .then((response) => {
-      toast('✅ Объявление создано');
-      return response.data;
-    })
-    .catch((error) => {
-      console.error('Ошибка при отправке:', error);
-      toast('❌ Не удалось создать объявление');
-      return -1;
     });
+
+    const location = response.headers['location'];
+    if (location) {
+      const match = location.match(/\/Ad\/(\d+)$/);
+      if (match) {
+        const id = parseInt(match[1], 10);
+        toast('✅ Объявление создано');
+        return id;
+      }
+    }
+
+    toast('❌ Не удалось определить ID объявления');
+    return -1;
+  } catch (error) {
+    console.error('Ошибка при отправке:', error);
+    toast('❌ Не удалось создать объявление');
+    return -1;
+  }
 };
 
 export const getAd = async (id: number): Promise<AdDto | null> => {
