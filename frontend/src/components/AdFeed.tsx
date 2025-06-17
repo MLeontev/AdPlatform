@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AdListItemDto } from '@/types/DTOs/adListItemDto.ts';
 import { AdFeedElement } from '@/components/AdFeedElement.tsx';
-import { getAds } from '@/api/ads.ts';
+import { getAds, getUserAds } from '@/api/ads.ts';
 import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -16,8 +16,16 @@ import { DataPagination } from '@/components/DataPagination.tsx';
 import { PageSizeSelector } from '@/components/PageSizeSelector.tsx';
 import { LoadingSpinner } from '@/components/LoadingSpinner.tsx';
 import { Card } from '@/components/ui/card.tsx';
+import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-function AdFeed() {
+function AdFeed(
+  componentParams: {
+    userId?: number;
+    isFullScreenOpened?: boolean;
+    adsCount?: (number: number) => void;
+  } = { isFullScreenOpened: true },
+) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState<PagedListDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +36,9 @@ function AdFeed() {
     min: number | null;
     max: number | null;
   }>({ min: null, max: null });
+  const [sidebarOpen, setSidebarOpen] = useState(
+    componentParams.isFullScreenOpened,
+  );
 
   useEffect(() => {
     const params = GetAdsParams(searchParams);
@@ -43,10 +54,20 @@ function AdFeed() {
     requestAds(searchParams).then();
   }, [searchParams]);
 
+  useEffect(() => {
+    if (componentParams.adsCount && currentPage)
+      componentParams.adsCount(currentPage.totalCount);
+  }, [currentPage]);
+
+  useEffect(() => {
+    setSidebarOpen(componentParams.isFullScreenOpened);
+  }, [componentParams.isFullScreenOpened]);
+
   const requestAds = async (params: URLSearchParams) => {
     setIsLoading(true);
-    const response = await getAds(params);
-    if (response) setCurrentPage(response);
+    if (componentParams.userId)
+      setCurrentPage(await getUserAds(params, componentParams.userId));
+    else setCurrentPage(await getAds(params));
     setIsLoading(false);
   };
 
@@ -63,6 +84,7 @@ function AdFeed() {
       categoryId: selectedCategory,
       minPrice: priceRange.min,
       maxPrice: priceRange.max,
+      userId: componentParams.userId,
     };
     updateQueryParams(qs.stringify(queryParams));
   };
@@ -75,62 +97,91 @@ function AdFeed() {
     console.log(adId);
   };
 
+  const renderFilters = () => (
+    <ScrollArea className="h-full pr-3">
+      <div className="flex flex-col space-y-4">
+        <Card className="p-3 space-y-4">
+          <SingleCategorySelector
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            className="w-full min-h-[200px]"
+          />
+        </Card>
+        <Card className="p-3 space-y-4">
+          <MultiCitySelector
+            selectedCities={selectedCities}
+            onCitiesChange={setSelectedCities}
+            className="w-full min-h-[300px]"
+          />
+        </Card>
+        <Card className="p-3 space-y-4">
+          <PriceRangeSelector
+            value={priceRange}
+            onValueChange={setPriceRange}
+          />
+        </Card>
+        <Button className="rounded-2xl" onClick={onSearch}>
+          Подтвердить
+        </Button>
+      </div>
+    </ScrollArea>
+  );
+
   return (
-    <div className="min-w-[900px]">
-      <div className="flex justify-center h-screen mr-[250px]">
-        <div className="flex flex-col relative right-4 w-[250px]">
-          <Card className="max-w-xs p-4 space-y-4 mb-3">
-            <SingleCategorySelector
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              className=" w-full"
-            />
-          </Card>
-          <Card className="max-w-xs p-4 space-y-4 mb-3">
-            <MultiCitySelector
-              selectedCities={selectedCities}
-              onCitiesChange={setSelectedCities}
-              className="w-full min-h-[300px]"
-            />
-          </Card>
-          <Card className="max-w-xs p-4 space-y-4 mb-3">
-            <PriceRangeSelector
-              value={priceRange}
-              onValueChange={setPriceRange}
-            />
-          </Card>
-          <Button className="m-1 rounded-2xl" onClick={onSearch}>
-            Подтвердить
-          </Button>
-        </div>
-        <div className="flex flex-col w-[768px]">
-          <div className="searchQuery flex flex-row">
-            <Input
-              type={'text'}
-              value={searchQuery}
-              className="rounded-2xl"
-              placeholder={'Поиск'}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Button className="ml-1 rounded-2xl" onClick={onSearch}>
-              Поиск
+    <div className="flex h-full w-full">
+      {sidebarOpen && (
+        <div className="w-[250px] flex-shrink-0">{renderFilters()}</div>
+      )}
+
+      <div className={`flex-1 ${!sidebarOpen ? 'pl-0' : 'pl-4'}`}>
+        <div className="flex flex-col h-full">
+          <div className="flex flex-row w-full">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-9 p-0 left-0 top-24"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              {sidebarOpen ? (
+                <PanelLeftClose className="h-4 w-4" />
+              ) : (
+                <PanelLeftOpen className="h-4 w-4" />
+              )}
+              <span className="sr-only">Toggle sidebar</span>
             </Button>
+
+            <div className="searchQuery flex flex-row mb-4 w-full">
+              <Input
+                type={'text'}
+                value={searchQuery}
+                className="rounded-2xl"
+                placeholder={'Поиск'}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button className="ml-1 rounded-2xl" onClick={onSearch}>
+                Поиск
+              </Button>
+            </div>
           </div>
+
           {!isLoading ? (
             currentPage?.totalCount !== undefined &&
             currentPage?.totalCount > 0 ? (
-              currentPage?.items.map((ad: AdListItemDto) => (
-                <Link key={ad.id} to={`/ad?id=${ad.id}`}>
-                  <AdFeedElement ad={ad} onClick={onClick} />
-                </Link>
-              ))
+              <div className="space-y-4 flex-1">
+                {currentPage?.items.map((ad: AdListItemDto) => (
+                  <Link key={ad.id} to={`/ad?id=${ad.id}`}>
+                    <AdFeedElement ad={ad} onClick={onClick} />
+                  </Link>
+                ))}
+              </div>
             ) : (
               <Label className="m-2">Объявления не найдены</Label>
             )
           ) : (
             <LoadingSpinner text="Пожалуйста, подождите..." className="my-3" />
           )}
-          <div className="flex mt-auto">
+
+          <div className="flex mt-auto pt-4">
             {currentPage !== null && (
               <PageSizeSelector pageSize={currentPage.pageSize} />
             )}

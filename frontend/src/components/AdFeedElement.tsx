@@ -21,14 +21,15 @@ export const AdFeedElement = (props: {
         <img
           src={props.ad.mainImage !== '' ? props.ad.mainImage : defaultImage}
           alt="Фото товара"
-          className="w-[100px] h-[100px] my-3"
+          className="w-[150px] h-[130px] my-3 object-cover rounded-lg"
         />
-        <div className="flex flex-col ml-[10px] text-left">
+        <div className="flex flex-col ml-[10px] text-left justify-center">
           <CardTitle className="text-xl">{props.ad.title}</CardTitle>
-          <CardTitle className="text-xl">{props.ad.price} руб.</CardTitle>
+          <CardTitle className="text-xl">{props.ad.price} ₽</CardTitle>
           <CardDescription>Категория: {props.ad.categoryName}</CardDescription>
           <CardDescription>Город: {props.ad.cityName}</CardDescription>
         </div>
+        <div className="flex justify-end items-center w-full" />
       </CardContent>
     </Card>
   );

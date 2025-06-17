@@ -71,6 +71,24 @@ export const getAds = async (
     });
 };
 
+export const getUserAds = async (
+  params: URLSearchParams,
+  userId: number,
+): Promise<PagedListDto | null> => {
+  return await api
+    .get<PagedListDto>('/api/ad/user/' + userId, {
+      params: params,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Ошибка при получении:', error);
+      toast('❌ Не удалось получить объявления');
+      return null;
+    });
+};
+
 export const putAd = async (id: number, formData: Ad): Promise<void> => {
   try {
     const formDataToSend = new FormData();
