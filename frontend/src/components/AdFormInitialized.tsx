@@ -1,12 +1,12 @@
-import { AdForm } from '@/components/AdForm';
-import { Ad } from '@/types/ad';
 import { getAd, postAd, putAd } from '@/api/ads.ts';
-import { useEffect, useState } from 'react';
+import { AdForm } from '@/components/AdForm';
 import { FullPageLoader } from '@/components/LoadingSpinner.tsx';
+import { Ad } from '@/types/ad';
+import { useEffect, useState } from 'react';
 
 interface AdFormInitializedProps {
   id?: number;
-  onSubmit?: () => void;
+  onSubmit?: (adId: number) => void;
 }
 
 export function AdFormInitialized({ id, onSubmit }: AdFormInitializedProps) {
@@ -42,15 +42,17 @@ export function AdFormInitialized({ id, onSubmit }: AdFormInitializedProps) {
   };
 
   const PostAd = async (formData: Ad) => {
-    await postAd({ ...formData });
-    if (onSubmit) onSubmit();
+    const newAdId = await postAd(formData);
+    if (newAdId !== -1 && onSubmit) {
+      onSubmit(newAdId);
+    }
   };
 
   const PutAd = async (formData: Ad, id?: number) => {
     if (id) {
       await putAd(id, { ...formData });
+      onSubmit?.(id);
     }
-    if (onSubmit) onSubmit();
   };
 
   return (

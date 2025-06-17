@@ -145,7 +145,7 @@ static List<City> LoadCitiesFromCsv(string path)
 
                 cities.Add(new City
                 {
-                    Name = parts[9],
+                    Name = parts[9].Trim(),
                 });
         }
     }

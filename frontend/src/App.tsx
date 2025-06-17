@@ -1,5 +1,4 @@
 import { DataProvider } from '@/components/DataProvider.tsx';
-import { ThemeModeToggle } from '@/components/ThemeModToggle.tsx';
 import { ThemeProvider } from '@/components/ThemeProvider.tsx';
 import '@/styles/App.css';
 import { useEffect } from 'react';
@@ -34,9 +33,6 @@ function App() {
       <div className="App max-w-[1920px] m-auto">
         <DataProvider>
           <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark h-[100px]">
-              <ThemeModeToggle />
-            </nav>
             <BrowserRouter>
               <AppRouter />
             </BrowserRouter>
