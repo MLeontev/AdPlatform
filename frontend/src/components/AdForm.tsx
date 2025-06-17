@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Ad } from '@/types/ad';
 import { AdImage } from '@/types/adImage.ts';
 import React, { useEffect, useState } from 'react';
+import { useAuthStore } from '@/store/authStore.ts';
 
 interface AdFormProps {
   initialData?: Ad | null;
@@ -30,6 +31,7 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
   const [uploadedImagePreviews, setUploadedImagePreviews] = useState<string[]>(
     [],
   );
+  const userId = useAuthStore((state) => state.id);
   const [formData, setFormData] = useState<Ad>(
     initialData || {
       title: '',
@@ -37,7 +39,7 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
       price: 0,
       categoryId: '1',
       cityId: '1',
-      user: '2', // заменить на реального пользователя
+      user: userId!.toString(),
       imagesLocal: [],
       imagesUploaded: [],
       imagesToRemove: [],
@@ -125,7 +127,7 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="ad-form flex flex-col justify-between items-start w-fit h-fit p-6 rounded-lg mb-8 mt-4 mx-auto w-fit"
+      className="ad-form flex flex-col justify-between items-start w-fit h-fit p-6 rounded-lg mb-8 mt-4 mx-auto"
     >
       <Label className="ml-[10px] text-3xl font-bold text-center mb-8 mt-4">
         {initialData ? 'Редактирование объявления' : 'Создание объявления'}

@@ -29,7 +29,7 @@ export const AdFeedElement = (props: {
           <CardDescription>Категория: {props.ad.categoryName}</CardDescription>
           <CardDescription>Город: {props.ad.cityName}</CardDescription>
         </div>
-        <div className="flex justify-end items-center w-full"><p className="text-4xl">⭐</p></div>
+        <div className="flex justify-end items-center w-full" />
       </CardContent>
     </Card>
   );

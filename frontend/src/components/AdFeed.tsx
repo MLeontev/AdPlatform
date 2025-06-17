@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AdListItemDto } from '@/types/DTOs/adListItemDto.ts';
 import { AdFeedElement } from '@/components/AdFeedElement.tsx';
-import { getAds } from '@/api/ads.ts';
+import { getAds, getUserAds } from '@/api/ads.ts';
 import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -65,7 +65,9 @@ function AdFeed(
 
   const requestAds = async (params: URLSearchParams) => {
     setIsLoading(true);
-    setCurrentPage(await getAds(params));
+    if (componentParams.userId)
+      setCurrentPage(await getUserAds(params, componentParams.userId));
+    else setCurrentPage(await getAds(params));
     setIsLoading(false);
   };
 
@@ -98,21 +100,21 @@ function AdFeed(
   const renderFilters = () => (
     <ScrollArea className="h-full pr-3">
       <div className="flex flex-col space-y-4">
-        <Card className="p-4 space-y-4">
+        <Card className="p-3 space-y-4">
           <SingleCategorySelector
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
-            className="w-full"
+            className="w-full min-h-[200px]"
           />
         </Card>
-        <Card className="p-4 space-y-4">
+        <Card className="p-3 space-y-4">
           <MultiCitySelector
             selectedCities={selectedCities}
             onCitiesChange={setSelectedCities}
             className="w-full min-h-[300px]"
           />
         </Card>
-        <Card className="p-4 space-y-4">
+        <Card className="p-3 space-y-4">
           <PriceRangeSelector
             value={priceRange}
             onValueChange={setPriceRange}

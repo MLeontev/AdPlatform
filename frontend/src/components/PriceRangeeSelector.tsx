@@ -92,7 +92,7 @@ export function PriceRangeSelector({
         />
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-col">
         <div className="space-y-2 flex-1">
           <Label htmlFor="min-price">От</Label>
           <Input

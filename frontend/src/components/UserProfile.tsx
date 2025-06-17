@@ -115,13 +115,13 @@ export function UserProfile({ user, onCreateAd }: UserProfileProps) {
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
-                <CardTitle>Мои объявления</CardTitle>
+                <CardTitle>Объявления</CardTitle>
                 <span className="text-sm text-gray-500">
                   Объявлений: {adsCount}
                 </span>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="w-full">
               <AdFeed
                 userId={user.id}
                 isFullScreenOpened={false}

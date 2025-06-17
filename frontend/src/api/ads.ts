@@ -76,7 +76,7 @@ export const getUserAds = async (
   userId: number,
 ): Promise<PagedListDto | null> => {
   return await api
-    .get<PagedListDto>('/api/ad/user' + userId, {
+    .get<PagedListDto>('/api/ad/user/' + userId, {
       params: params,
     })
     .then((response) => {

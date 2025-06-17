@@ -53,7 +53,7 @@ export function AdPublication({ data }: AdPageProps) {
           </Card>
 
           <div className="flex justify-between items-start">
-            <h1 className="text-3xl font-bold">{data.title}</h1>
+            <h1 className="text-3xl font-bold max-w-[500px] wrap-break-word">{data.title}</h1>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold">
                 {data.price.toLocaleString()} ₽
