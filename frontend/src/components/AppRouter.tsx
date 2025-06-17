@@ -1,24 +1,32 @@
-import DefaultPage from '@/pages/DefaultPage';
+import { useAuthStore } from '@/store/authStore';
 import { Route, Routes } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from '../router/index';
-import { useAuthStore } from '@/store/authStore';
+import AdFeed from './AdFeed';
+import { Layout } from './Layout';
 
 const AppRouter = () => {
   const isAuth = useAuthStore((state) => state.isAuth);
 
-  return isAuth ? (
+  return (
     <Routes>
-      {privateRoutes.map((route) => (
-        <Route Component={route.component} path={route.path} />
-      ))}
-      <Route path="*" element={<DefaultPage />} />
-    </Routes>
-  ) : (
-    <Routes>
-      {publicRoutes.map((route) => (
-        <Route Component={route.component} path={route.path} />
-      ))}
-      <Route path="*" element={<DefaultPage />} />
+      <Route element={<Layout />}>
+        {isAuth
+          ? privateRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))
+          : publicRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+        <Route path="*" element={<AdFeed />} />
+      </Route>
     </Routes>
   );
 };

@@ -1,22 +1,24 @@
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { MapPin, User, Calendar, Tag } from 'lucide-react';
+import ImageGallery from '@/components/ImageGalary.tsx';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import ImageGallery from '@/components/ImageGalary.tsx';
-import { ImageDto } from '@/types/DTOs/imageDto.ts';
-import { AdDto } from '@/types/DTOs/adDto.ts';
 import {
   Dialog,
-  DialogTrigger,
+  DialogClose,
   DialogContent,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog.tsx';
-import { Label } from '@/components/ui/label.tsx';
 import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { useAuthStore } from '@/store/authStore';
+import { AdDto } from '@/types/DTOs/adDto.ts';
+import { ImageDto } from '@/types/DTOs/imageDto.ts';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { Calendar, MapPin, Pencil, Tag, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -29,6 +31,9 @@ interface AdPageProps {
 }
 
 export function AdPublication({ data }: AdPageProps) {
+  const currentUserId = useAuthStore((state) => state.id);
+  const isAuthor = currentUserId === data.user.id;
+
   const formattedDate = format(new Date(data.createdAt), 'PPP', {
     locale: ru,
   });
@@ -57,6 +62,13 @@ export function AdPublication({ data }: AdPageProps) {
                 <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
                   Продано
                 </span>
+              )}
+              {isAuthor && (
+                <Link to={`/adform?id=${data.id}`}>
+                  <Button variant="outline" size="icon" title="Редактировать">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
@@ -170,9 +182,6 @@ export function AdPublication({ data }: AdPageProps) {
           </Card>
 
           <div className="space-y-2">
-            <Button variant="outline" className="w-full">
-              Пожаловаться
-            </Button>
             <Button variant="outline" className="w-full">
               Добавить в избранное
             </Button>

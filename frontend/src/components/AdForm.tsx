@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import type { Ad } from '@/types/ad';
+import { useAppData } from '@/components/DataProvider.tsx';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -13,8 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import type { Ad } from '@/types/ad';
 import { AdImage } from '@/types/adImage.ts';
-import { useAppData } from '@/components/DataProvider.tsx';
+import React, { useEffect, useState } from 'react';
 
 interface AdFormProps {
   initialData?: Ad | null;
