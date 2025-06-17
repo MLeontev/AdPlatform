@@ -66,7 +66,7 @@ export const getUserAds = async (
   params: URLSearchParams,
   userId: number,
 ): Promise<PagedListDto | null> => {
-  return await axios
+  return await api
     .get<PagedListDto>('/api/ad/user' + userId, {
       params: params,
     })
