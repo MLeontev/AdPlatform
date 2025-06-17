@@ -140,14 +140,17 @@ static List<City> LoadCitiesFromCsv(string path)
         while (!parser.EndOfData)
         {
             string[] parts = parser.ReadFields();
-            cities.Add(new City
-            {
-                Name = parts[9],
-            });
+
+            if (parts.Length > 9 && !string.IsNullOrWhiteSpace(parts[9]))
+
+                cities.Add(new City
+                {
+                    Name = parts[9],
+                });
         }
     }
 
-    return cities;
+    return cities.OrderBy(c => c.Name).ToList();
 }
 
 static List<Category> LoadCategoriesFromCsv(string path)
