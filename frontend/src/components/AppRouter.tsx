@@ -1,9 +1,10 @@
+import DefaultPage from '@/pages/DefaultPage';
 import { Route, Routes } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from '../router/index';
-import DefaultPage from '@/pages/DefaultPage';
+import { useAuthStore } from '@/store/authStore';
 
 const AppRouter = () => {
-  const isAuth: boolean = true;
+  const isAuth = useAuthStore((state) => state.isAuth);
 
   return isAuth ? (
     <Routes>

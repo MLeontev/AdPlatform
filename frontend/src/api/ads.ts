@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { Ad } from '@/types/ad.ts';
 import { AdDto } from '@/types/DTOs/adDto.ts';
 import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
 import { toast } from 'sonner';
+import api from './axios';
 
 export const postAd = async (formData: Ad): Promise<number> => {
   const formDataToSend = new FormData();
@@ -17,7 +17,7 @@ export const postAd = async (formData: Ad): Promise<number> => {
     formDataToSend.append('Files', formData.imagesLocal[i]);
   }
 
-  return await axios
+  return await api
     .post('/api/ad', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -36,7 +36,7 @@ export const postAd = async (formData: Ad): Promise<number> => {
 
 export const getAd = async (id: number): Promise<AdDto | null> => {
   try {
-    const response = await axios.get<AdDto>('/api/ad/' + id);
+    const response = await api.get<AdDto>('/api/ad/' + id);
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении:', error);
@@ -48,7 +48,7 @@ export const getAd = async (id: number): Promise<AdDto | null> => {
 export const getAds = async (
   params: URLSearchParams,
 ): Promise<PagedListDto | null> => {
-  return await axios
+  return await api
     .get<PagedListDto>('/api/ad', {
       params: params,
     })
@@ -104,7 +104,7 @@ export const putAd = async (id: number, formData: Ad): Promise<void> => {
       }
     }
 
-    await axios.put<AdDto>('/api/ad/' + id, formDataToSend, {
+    await api.put<AdDto>('/api/ad/' + id, formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

@@ -32,9 +32,10 @@ public class UserController : ControllerBase
             {
                 HttpOnly = true,
                 Secure = false,
-                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
-                SameSite = SameSiteMode.None
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays)
             };
+
 
             Response.Cookies.Append("RefreshToken", result.RefreshToken, cookieOptions);
 
@@ -57,9 +58,10 @@ public class UserController : ControllerBase
             {
                 HttpOnly = true,
                 Secure = false,
-                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
-                SameSite = SameSiteMode.None
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays)
             };
+
 
             Response.Cookies.Append("RefreshToken", result.RefreshToken, cookieOptions);
 
@@ -86,9 +88,10 @@ public class UserController : ControllerBase
             {
                 HttpOnly = true,
                 Secure = false,
-                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays),
-                SameSite = SameSiteMode.None
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryInDays)
             };
+
 
             Response.Cookies.Append("RefreshToken", result.RefreshToken, cookieOptions);
 
@@ -138,15 +141,15 @@ public class UserController : ControllerBase
         }
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, [FromForm] UpdateUserDto dto)
     {
         try
         {
-            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            // if (id != userId)
-            //     return Forbid("You cannot update another user");
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            if (id != userId)
+                return Forbid("You cannot update another user");
 
             var user = await _userService.UpdateUser(id, dto);
             if (user == null) return NotFound();

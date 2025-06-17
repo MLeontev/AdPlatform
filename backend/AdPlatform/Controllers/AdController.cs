@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AdPlatform.DTOs.Ads;
 using AdPlatform.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdPlatform.Controllers;
@@ -44,15 +45,13 @@ public class AdController : ControllerBase
         }
     }
 
-    // [Authorize] - Раскомментировать, когда будет реализована авторизация
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateAd([FromForm] CreateAdDto createAdDto)
     {
         try
         {
-            // Раскомментировать, когда будет реализована авторизация
-            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var userId = 2; // Временно, для тестирования
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var adId = await _adService.CreateAd(userId, createAdDto);
             return CreatedAtAction(nameof(GetAdById), new { id = adId }, null);
         }
@@ -78,15 +77,13 @@ public class AdController : ControllerBase
         }
     }
 
-    // [Authorize] - Раскомментировать, когда будет реализована авторизация
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAd(int id, [FromForm] UpdateAdDto updateAdDto)
     {
         try
         {
-            // Раскомментировать, когда будет реализована авторизация
-            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var userId = 2; // Временно, для тестирования
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             await _adService.UpdateAd(userId, id, updateAdDto);
             return NoContent();
         }
@@ -96,15 +93,13 @@ public class AdController : ControllerBase
         }
     }
 
-    // [Authorize] - Раскомментировать, когда будет реализована авторизация
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAd(int id)
     {
         try
         {
-            // Раскомментировать, когда будет реализована авторизация
-            // var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var userId = 2; // Временно, для тестирования
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             await _adService.DeleteAd(userId, id);
             return NoContent();
         }

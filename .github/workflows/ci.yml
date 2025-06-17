@@ -1,0 +1,25 @@
+﻿name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Clean old project
+        run: |
+          rm -rf /home/githubrunner/AdPlatform
+
+      - name: Clone repo into project directory
+        run: |
+          git clone https://github.com/MLeontev/AdPlatform.git /home/githubrunner/AdPlatform
+
+      - name: Restart docker containers
+        run: |
+          cd /home/githubrunner/AdPlatform
+          docker compose down --remove-orphans
+          docker compose up -d --build
