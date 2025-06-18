@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AdPlatform.Data;
 using AdPlatform.DTOs;
 using AdPlatform.DTOs.Ads;
@@ -61,7 +62,7 @@ public class AdService : IAdService
         return ad.Id;
     }
 
-    public async Task<AdDto?> GetAdById(int adId)
+    public async Task<AdDto?> GetAdById(int adId, ClaimsPrincipal? user = null)
     {
         var ad = await _dbContext.Ads
             .Include(a => a.Images)
@@ -100,6 +101,16 @@ public class AdService : IAdService
             })
             .ToListAsync();
 
+        bool isFavourite = false;
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdStr, out int userId))
+            {
+                isFavourite = await _dbContext.Favourites.AnyAsync(f => f.UserId == userId && f.AdId == ad.Id);
+            }
+        }
+
         return new AdDto
         {
             Id = ad.Id,
@@ -114,6 +125,7 @@ public class AdService : IAdService
             CityId = ad.City.Id,
             CityName = ad.City.Name,
             IsSold = ad.IsSold,
+            IsFavourite = isFavourite,
             User = new UserDto
             {
                 Id = ad.User.Id,

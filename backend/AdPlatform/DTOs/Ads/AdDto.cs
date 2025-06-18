@@ -24,4 +24,6 @@ public class AdDto
     public UserDto User { get; set; } = null!;
 
     public List<ImageDto> Images { get; set; } = [];
+
+    public bool IsFavourite { get; set; }
 }
