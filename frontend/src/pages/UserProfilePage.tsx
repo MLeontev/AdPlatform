@@ -1,10 +1,10 @@
+import { getUser } from '@/api/user.ts';
+import { FullPageLoader } from '@/components/LoadingSpinner.tsx';
+import { Label } from '@/components/ui/label.tsx';
 import { UserProfile } from '@/components/UserProfile.tsx';
 import { UserDto } from '@/types/DTOs/userDto.ts';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { FullPageLoader } from '@/components/LoadingSpinner.tsx';
-import { getUser } from '@/api/user.ts';
-import { Label } from '@/components/ui/label.tsx';
 
 export default function UserProfilePage() {
   const [searchQuery] = useSearchParams();
@@ -14,7 +14,7 @@ export default function UserProfilePage() {
 
   useEffect(() => {
     setIsLoading(true);
-    const userId = searchQuery.get('userId');
+    const userId = searchQuery.get('id');
     setId(userId ? parseInt(userId) : undefined);
     setIsLoading(false);
   }, [searchQuery]);
@@ -25,13 +25,9 @@ export default function UserProfilePage() {
     setIsLoading(false);
   }, [id]);
 
-  const handleCreateAd = () => {
-    console.log('Navigate to create ad page');
-  };
-
   return !isLoading ? (
     user ? (
-      <UserProfile user={user} onCreateAd={handleCreateAd} />
+      <UserProfile user={user} />
     ) : (
       <Label>Пользователь не найден</Label>
     )

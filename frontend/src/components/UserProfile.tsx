@@ -1,27 +1,28 @@
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { UserDto } from '@/types/DTOs/userDto.ts';
-import { Link } from 'react-router-dom';
 import AdFeed from '@/components/AdFeed.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuthStore } from '@/store/authStore';
+import { UserDto } from '@/types/DTOs/userDto.ts';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface UserProfileProps {
   user: UserDto;
-  onCreateAd: () => void;
 }
 
-export function UserProfile({ user, onCreateAd }: UserProfileProps) {
+export function UserProfile({ user }: UserProfileProps) {
   const [adsCount, setAdsCount] = useState(0);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ru-RU');
   };
 
+  const userId = useAuthStore((state) => state.id);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Левая колонка - информация о пользователе */}
         <div className="md:col-span-1 space-y-6">
           <Card>
             <CardHeader className="flex flex-col items-center">
@@ -60,7 +61,9 @@ export function UserProfile({ user, onCreateAd }: UserProfileProps) {
 
               {user.links.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Социальные сети</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    Социальные сети
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     {user.links.map((link) => (
                       <a
@@ -70,9 +73,9 @@ export function UserProfile({ user, onCreateAd }: UserProfileProps) {
                         rel="noopener noreferrer"
                         className="inline-flex items-center px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
                       >
-          <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-            {link.platform}
-          </span>
+                        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          {link.platform}
+                        </span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="ml-1.5 h-4 w-4 text-gray-500 dark:text-gray-400"
@@ -94,24 +97,26 @@ export function UserProfile({ user, onCreateAd }: UserProfileProps) {
               )}
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Действия</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-rows-1 md:grid-rows-2 gap-4">
-              <Button onClick={onCreateAd} className="w-full">
-                Создать новое объявление
-              </Button>
-              <Button variant="outline" className="w-full" asChild>
-                <Link to="/favorites">Избранные объявления</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          {user.id === userId && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Действия</CardTitle>
+              </CardHeader>
+
+              <CardContent className="grid grid-rows-1 md:grid-rows-2 gap-4">
+                <Button className="w-full">
+                  <Link to="/adform">Создать новое объявление</Link>
+                </Button>
+
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/favorites">Избранные объявления</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
-        {/* Правая колонка - действия и объявления */}
         <div className="md:col-span-2 space-y-6">
-
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center">

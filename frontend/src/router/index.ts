@@ -11,7 +11,7 @@ export const privateRoutes = [
   { path: '/adform', component: FormPage },
   { path: '/adfeed', component: AdFeedPage },
   { path: '/ad', component: AdPage },
-  { path: '/user', component: UserProfilePage },
+  { path: '/profile', component: UserProfilePage },
 ];
 
 export const publicRoutes = [
@@ -20,4 +20,5 @@ export const publicRoutes = [
   { path: '/ad', component: AdPage },
   { path: '/login', component: LoginPage },
   { path: '/register', component: RegisterPage },
+  { path: '/profile', component: UserProfilePage },
 ];

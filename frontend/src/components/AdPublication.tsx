@@ -20,12 +20,6 @@ import { ru } from 'date-fns/locale';
 import { Calendar, MapPin, Pencil, Tag, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface User {
-  id: string;
-  name: string;
-  avatar?: string;
-}
-
 interface AdPageProps {
   data: AdDto;
 }
@@ -53,7 +47,9 @@ export function AdPublication({ data }: AdPageProps) {
           </Card>
 
           <div className="flex justify-between items-start">
-            <h1 className="text-3xl font-bold max-w-[500px] wrap-break-word">{data.title}</h1>
+            <h1 className="text-3xl font-bold max-w-[500px] wrap-break-word">
+              {data.title}
+            </h1>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold">
                 {data.price.toLocaleString()} ₽
@@ -91,7 +87,10 @@ export function AdPublication({ data }: AdPageProps) {
               <CardTitle>Продавец</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-4">
+              <Link
+                to={`/profile?id=${data.user.id}`}
+                className="flex items-center gap-4 hover:bg-gray-50 p-2 rounded-md transition"
+              >
                 <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
                   {data.user.avatarSrc ? (
                     <img
@@ -106,7 +105,7 @@ export function AdPublication({ data }: AdPageProps) {
                 <div>
                   <p className="font-medium">{data.user.name}</p>
                 </div>
-              </div>
+              </Link>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full mt-4" variant="outline">

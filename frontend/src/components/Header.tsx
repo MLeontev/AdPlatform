@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 
 const Header = () => {
   const isAuth = useAuthStore((state) => state.isAuth);
+  const userId = useAuthStore((state) => state.id);
   const logout = useAuthStore((state) => state.logout);
   const location = useLocation();
 
@@ -41,7 +42,7 @@ const Header = () => {
                   location.pathname === '/login' ? 'secondary' : 'default'
                 }
               >
-                <Link to="/user-profile">Профиль</Link>
+                <Link to={`/profile?id=${userId}`}>Профиль</Link>
               </Button>
               <Button variant="outline" onClick={logout}>
                 Выйти
