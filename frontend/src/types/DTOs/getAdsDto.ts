@@ -6,4 +6,5 @@ export interface GetAdsDto {
   maxPrice?: number | null;
   pageNumber: number;
   pageSize: number;
+  isSold?: boolean | null;
 }
