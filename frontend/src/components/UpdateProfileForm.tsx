@@ -212,13 +212,13 @@ export const UpdateProfileForm: React.FC = () => {
             {formData.links.map((link, index) => (
               <div key={index} className="flex items-center gap-2">
                 <Input
-                  placeholder="Платформа (напр. GitHub)"
+                  placeholder="Платформа (напр. Telegram)"
                   value={link.platform}
                   onChange={(e) => handleLinkChange(index, 'platform', e.target.value)}
                 />
                 <Input
                   type="url"
-                  placeholder="https://github.com/username"
+                  placeholder="https://t.me/username"
                   value={link.link}
                   onChange={(e) => handleLinkChange(index, 'link', e.target.value)}
                 />
