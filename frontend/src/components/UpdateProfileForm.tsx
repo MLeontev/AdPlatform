@@ -236,7 +236,7 @@ export const UpdateProfileForm: React.FC = () => {
             </Button>
           </div>
         </CardContent>
-        <CardFooter className="mt-10px">
+        <CardFooter className="mt-[10px]">
           <Button className="mx-auto" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
           </Button>
