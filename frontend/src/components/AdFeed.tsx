@@ -18,6 +18,7 @@ import { LoadingSpinner } from '@/components/LoadingSpinner.tsx';
 import { Card } from '@/components/ui/card.tsx';
 import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { SoldFilter } from '@/components/SoldFilter.tsx';
 
 function AdFeed(
   componentParams: {
@@ -33,6 +34,7 @@ function AdFeed(
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCities, setSelectedCities] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [isSold, setIsSold] = useState<boolean | null>(null);
   const [priceRange, setPriceRange] = useState<{
     min: number | null;
     max: number | null;
@@ -44,6 +46,7 @@ function AdFeed(
   useEffect(() => {
     const params = GetAdsParams(searchParams);
 
+    if (params.isSold !== undefined) setIsSold(params.isSold);
     if (params.categoryId) setSelectedCategory(params.categoryId);
     if (params.cityIds?.length) setSelectedCities(params.cityIds);
     if (params.searchQuery) setSearchQuery(params.searchQuery);
@@ -90,6 +93,7 @@ function AdFeed(
       minPrice: priceRange.min,
       maxPrice: priceRange.max,
       userId: componentParams.userId,
+      isSold: isSold,
     };
     updateQueryParams(qs.stringify(queryParams));
   };
@@ -125,6 +129,12 @@ function AdFeed(
             onValueChange={setPriceRange}
           />
         </Card>
+        {(componentParams.isFavouritesOpened || componentParams.userId) && (
+          <SoldFilter
+            isSold={isSold}
+            onSoldChange={(isSoldValue) => setIsSold(isSoldValue)}
+          />
+        )}
         <Button className="rounded-2xl" onClick={onSearch}>
           Подтвердить
         </Button>

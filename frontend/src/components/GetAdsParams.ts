@@ -13,6 +13,17 @@ export function GetAdsParams(searchParams: URLSearchParams): GetAdsDto {
       .filter((n) => !isNaN(n));
   };
 
+  const getBoolean = (key: string): boolean | null => {
+    const value = searchParams.get(key);
+    return value
+      ? value === 'true'
+        ? true
+        : value === 'false'
+          ? false
+          : null
+      : null;
+  };
+
   return {
     categoryId: getNumber('categoryId'),
     cityIds: getNumberArray('cityIds'),
@@ -21,5 +32,6 @@ export function GetAdsParams(searchParams: URLSearchParams): GetAdsDto {
     maxPrice: getNumber('maxPrice'),
     pageNumber: getNumber('pageNumber') || 1,
     pageSize: getNumber('pageSize') || 5,
+    isSold: getBoolean('isSold'),
   };
 }
