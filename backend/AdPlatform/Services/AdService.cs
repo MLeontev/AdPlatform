@@ -292,7 +292,6 @@ public class AdService : IAdService
         var totalCount = await query.CountAsync();
 
         var ads = await query
-            .Where(a => !a.IsSold)
             .OrderByDescending(a => a.CreatedAt)
             .Include(a => a.Images)
             .Skip((getAdsDto.PageNumber - 1) * getAdsDto.PageSize)

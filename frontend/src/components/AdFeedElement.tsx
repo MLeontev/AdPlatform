@@ -1,10 +1,10 @@
-import { AdListItemDto } from '@/types/DTOs/adListItemDto.ts';
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from '@/components/ui/card.tsx';
+import { AdListItemDto } from '@/types/DTOs/adListItemDto.ts';
 import defaultImage from '../assets/defaultImage.svg';
 
 export const AdFeedElement = (props: {
@@ -17,6 +17,11 @@ export const AdFeedElement = (props: {
 
   return (
     <Card onClick={handleClick} className="h-fit my-3 cursor-pointer">
+      {props.ad.isSold && (
+        <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
+          Продано
+        </div>
+      )}
       <CardContent className="flex flex-row flex-nowrap">
         <img
           src={props.ad.mainImage !== '' ? props.ad.mainImage : defaultImage}
