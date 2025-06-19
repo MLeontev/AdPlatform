@@ -16,10 +16,13 @@ export const AdFeedElement = (props: {
   };
 
   return (
-    <Card onClick={handleClick} className="h-fit my-3 cursor-pointer">
+    <Card
+      onClick={handleClick}
+      className="h-fit my-3 cursor-pointer relative overflow-hidden"
+    >
       {props.ad.isSold && (
-        <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
-          Продано
+        <div className="absolute top-3 -right-8 bg-red-500 text-white font-bold py-1 pl-10 pr-6 transform rotate-45 shadow-md z-10">
+          ПРОДАНО
         </div>
       )}
       <CardContent className="flex flex-row flex-nowrap">
