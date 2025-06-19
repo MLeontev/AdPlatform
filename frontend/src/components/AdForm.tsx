@@ -2,20 +2,12 @@ import { useAppData } from '@/components/DataProvider.tsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import type { Ad } from '@/types/ad';
 import { AdImage } from '@/types/adImage.ts';
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore.ts';
+import { SearchSelect } from '@/components/SearchSelect.tsx';
 
 interface AdFormProps {
   initialData?: Ad | null;
@@ -47,7 +39,7 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
     },
   );
   const categories = data?.categories || [];
-  const cities = data?.cities || [{ id: 1, name: 'City' }];
+  const cities = data?.cities || [];
 
   useEffect(() => {
     if (initialData) {
@@ -167,53 +159,27 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
         required
       />
 
-      <Label className="ml-[10px]">
-        Категория:
-        <Select
-          name="category"
+      <div className="flex flex-col gap-2 m-[10px]">
+        <Label>Категория:</Label>
+        <SearchSelect
+          options={categories}
           value={formData.categoryId}
-          onValueChange={handleCategoryChange}
-          required
-        >
-          <SelectTrigger className="m-[10px]">
-            <SelectValue placeholder="Выберите категорию" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Категории</SelectLabel>
-              {categories.map((cat) => (
-                <SelectItem key={cat.id} value={cat.id.toString()}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </Label>
+          onChange={handleCategoryChange}
+          placeholder="Выберите категорию"
+          emptyText="Категория не найдена"
+        />
+      </div>
 
-      <Label className="ml-[10px]">
-        Город:
-        <Select
-          name="city"
+      <div className="flex flex-col gap-2 m-[10px]">
+        <Label>Город:</Label>
+        <SearchSelect
+          options={cities}
           value={formData.cityId}
-          onValueChange={handleCityChange}
-          required
-        >
-          <SelectTrigger className="m-[10px]">
-            <SelectValue placeholder="Выберите город" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Города</SelectLabel>
-              {cities.map((city) => (
-                <SelectItem key={city.id} value={city.id.toString()}>
-                  {city.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </Label>
+          onChange={handleCityChange}
+          placeholder="Выберите город"
+          emptyText="Город не найден"
+        />
+      </div>
 
       {initialData && (
         <Label className="ml-[10px]">
