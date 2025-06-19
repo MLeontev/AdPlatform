@@ -4,13 +4,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trash2 } from 'lucide-react';
-import { Skeleton } from "@/components/ui/skeleton"; // Добавим Skeleton для красивой загрузки
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { updateUser, getUser } from "@/api/user.ts";
 
 import { UpdateProfileDto } from "@/types/DTOs/updateProfileDto.ts";
 import { UserLinkDto } from "@/types/DTOs/userLinkDto.ts";
-import {useAuthStore} from "@/store/authStore.ts";
+import { useAuthStore } from "@/store/authStore.ts";
 
 export const UpdateProfileForm: React.FC = () => {
   const [formData, setFormData] = useState<Omit<UpdateProfileDto, 'avatar'>>({
@@ -159,11 +159,18 @@ export const UpdateProfileForm: React.FC = () => {
         <CardContent className="grid gap-6">
           {/* Аватар */}
           <div className="flex items-center gap-4">
-            <img
-              src={avatarPreview || 'https://via.placeholder.com/96'}
-              alt="Предпросмотр аватара"
-              className="w-24 h-24 rounded-full object-cover"
-            />
+            {avatarPreview ? (
+              <img
+                src={avatarPreview}
+                alt="Предпросмотр аватара"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
+                Предпросмотр
+              </div>
+            )}
+
             <div className="grid gap-2 flex-1">
               <Label htmlFor="avatar-input">Аватар</Label>
               <Input
@@ -229,7 +236,7 @@ export const UpdateProfileForm: React.FC = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button className="mx-auto" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
           </Button>
         </CardFooter>

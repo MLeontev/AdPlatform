@@ -10,7 +10,7 @@ export const getUser = async (id: number): Promise<UserDto | null> => {
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении:', error);
-    toast('❌ Не удалось получить поьзователя');
+    toast('❌ Не удалось получить пользователя');
     return null;
   }
 };
@@ -36,7 +36,7 @@ export const updateUser = async (id: number, formData: UpdateProfileDto): Promis
         'Content-Type': 'multipart/form-data',
       },
     });
-    toast('✅ Объявление обновлено');
+    toast('✅ Данные профиля обновлены');
   } catch (error) {
     console.error('Ошибка при обновлении:', error);
     toast('❌ Не удалось обновить профиль пользователя');
