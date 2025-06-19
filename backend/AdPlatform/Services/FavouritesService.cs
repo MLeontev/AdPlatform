@@ -5,6 +5,7 @@ using AdPlatform.Interfaces;
 using AdPlatform.Models;
 using AdPlatform.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace AdPlatform.Services;
 
@@ -17,11 +18,11 @@ public class FavouritesService : IFavouritesService
     public FavouritesService(
         AppDbContext dbContext,
         IStorageService storageService,
-        MinioOptions minioOptions)
+        IOptions<MinioOptions> minioOptions)
     {
         _dbContext = dbContext;
         _storageService = storageService;
-        _minioOptions = minioOptions;
+        _minioOptions = minioOptions.Value;
     }
 
     public async Task AddToFavourites(int userId, int adId)
