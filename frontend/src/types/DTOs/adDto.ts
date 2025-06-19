@@ -1,5 +1,5 @@
-import { UserDto } from '@/types/DTOs/userDto.ts';
 import { ImageDto } from '@/types/DTOs/imageDto.ts';
+import { UserDto } from '@/types/DTOs/userDto.ts';
 
 export interface AdDto {
   id: number;
@@ -15,4 +15,5 @@ export interface AdDto {
   cityName: string;
   user: UserDto;
   images: ImageDto[];
+  isFavorite: boolean;
 }

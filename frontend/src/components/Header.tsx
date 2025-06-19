@@ -30,6 +30,16 @@ const Header = () => {
                 <Link to="/adform">Создать объявление</Link>
               </Button>
             )}
+            {isAuth && (
+              <Button
+                asChild
+                variant={
+                  location.pathname === '/favourites' ? 'secondary' : 'ghost'
+                }
+              >
+                <Link to="/favourites">Избранные объявления</Link>
+              </Button>
+            )}
           </nav>
         </div>
 

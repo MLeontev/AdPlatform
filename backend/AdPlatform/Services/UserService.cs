@@ -39,12 +39,12 @@ public class UserService : IUserService
     {
         var userByEmail = await _userManager.FindByEmailAsync(registerDto.Email);
         if (userByEmail is not null)
-            throw new Exception("User with this email already exists");
+            throw new Exception("Пользователь с таким email уже существует");
 
         var userByPhone = await _userManager.Users
             .FirstOrDefaultAsync(u => u.PhoneNumber == registerDto.Phone);
         if (userByPhone is not null)
-            throw new Exception("User with this phone number already exists");
+            throw new Exception("Пользователь с таким номером телефона уже существует");
 
         var user = new User
         {
@@ -90,11 +90,11 @@ public class UserService : IUserService
             .FirstOrDefaultAsync(u => u.PhoneNumber == loginDto.Login);
 
         if (user is null)
-            throw new Exception("Invalid login or password");
+            throw new Exception("Неверный логин или пароль");
 
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
         if (!isPasswordValid)
-            throw new Exception("Invalid login or password");
+            throw new Exception("Неверный логин или пароль");
 
         var accessToken = _jwtProvider.GenerateAccessToken(user);
         var refreshToken = _jwtProvider.GenerateRefreshToken();
@@ -189,12 +189,12 @@ public class UserService : IUserService
         var existingByEmail = await _userManager.Users
             .FirstOrDefaultAsync(u => u.Email == dto.Email && u.Id != id);
         if (existingByEmail != null)
-            throw new Exception("A user with this email already exists");
+            throw new Exception("Пользователь с таким email уже существует");
 
         var existingByPhone = await _userManager.Users
             .FirstOrDefaultAsync(u => u.PhoneNumber == dto.Phone && u.Id != id);
         if (existingByPhone != null)
-            throw new Exception("A user with this phone number already exists");
+            throw new Exception("Пользователь с таким номером телефона уже существует");
 
         user.Name = dto.Name;
         user.Surname = dto.Surname;

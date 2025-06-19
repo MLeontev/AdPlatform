@@ -71,6 +71,23 @@ export const getAds = async (
     });
 };
 
+export const getUserFavouriteAds = async (
+  params: URLSearchParams,
+): Promise<PagedListDto | null> => {
+  return await api
+    .get<PagedListDto>('/api/favourites/ads', {
+      params: params,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Ошибка при получении:', error);
+      toast('❌ Не удалось получить объявления');
+      return null;
+    });
+};
+
 export const getUserAds = async (
   params: URLSearchParams,
   userId: number,

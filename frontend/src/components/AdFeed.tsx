@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AdListItemDto } from '@/types/DTOs/adListItemDto.ts';
 import { AdFeedElement } from '@/components/AdFeedElement.tsx';
-import { getAds, getUserAds } from '@/api/ads.ts';
+import { getAds, getUserAds, getUserFavouriteAds } from '@/api/ads.ts';
 import { PagedListDto } from '@/types/DTOs/pagedListDto.ts';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -23,8 +23,9 @@ function AdFeed(
   componentParams: {
     userId?: number;
     isFullScreenOpened?: boolean;
+    isFavouritesOpened?: boolean;
     adsCount?: (number: number) => void;
-  } = { isFullScreenOpened: true },
+  } = { isFullScreenOpened: true, isFavouritesOpened: false },
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState<PagedListDto | null>(null);
@@ -65,9 +66,13 @@ function AdFeed(
 
   const requestAds = async (params: URLSearchParams) => {
     setIsLoading(true);
-    if (componentParams.userId)
+    if (componentParams.isFavouritesOpened) {
+      setCurrentPage(await getUserFavouriteAds(params));
+    } else if (componentParams.userId) {
       setCurrentPage(await getUserAds(params, componentParams.userId));
-    else setCurrentPage(await getAds(params));
+    } else {
+      setCurrentPage(await getAds(params));
+    }
     setIsLoading(false);
   };
 

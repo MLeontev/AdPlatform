@@ -25,7 +25,7 @@ const LoginForm = () => {
       setAuthData(result);
       navigate('/');
     } else {
-      setError('Ошибка авторизации');
+      setError('Неверный логин или пароль');
     }
   };
 
@@ -81,7 +81,7 @@ const LoginForm = () => {
       <div className="flex justify-center mt-4 w-full">
         <p className="text-gray-700">
           Нет аккаунта —{' '}
-          <Link to="/auth" className="text-blue-600 hover:underline">
+          <Link to="/register" className="text-blue-600 hover:underline">
             зарегистрируйтесь
           </Link>
         </p>
