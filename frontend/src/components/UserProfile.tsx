@@ -110,6 +110,10 @@ export function UserProfile({ user }: UserProfileProps) {
                 <Button variant="outline" className="w-full" asChild>
                   <Link to="/favourites">Избранные объявления</Link>
                 </Button>
+
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/profile-update">Редактировать профиль</Link>
+                </Button>
               </CardContent>
             </Card>
           )}

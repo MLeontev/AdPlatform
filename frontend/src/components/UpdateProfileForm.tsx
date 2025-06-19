@@ -217,6 +217,7 @@ export const UpdateProfileForm: React.FC = () => {
                   onChange={(e) => handleLinkChange(index, 'platform', e.target.value)}
                 />
                 <Input
+                  type="url"
                   placeholder="https://github.com/username"
                   value={link.link}
                   onChange={(e) => handleLinkChange(index, 'link', e.target.value)}
@@ -235,7 +236,7 @@ export const UpdateProfileForm: React.FC = () => {
             </Button>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="mt-10px">
           <Button className="mx-auto" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
           </Button>
