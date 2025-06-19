@@ -5,6 +5,7 @@ import UserProfilePage from '@/pages/UserProfilePage.tsx';
 import { FormPage } from '@/pages/FormPage.tsx';
 import { LoginPage } from '@/pages/LoginPage.tsx';
 import { RegisterPage } from '@/pages/RegisterPage.tsx';
+import { FavouritesPage } from '@/pages/FavouritesPage.tsx';
 
 export const privateRoutes = [
   // { path: '/defaultpage', component: DefaultPage },
@@ -12,6 +13,7 @@ export const privateRoutes = [
   { path: '/adfeed', component: AdFeedPage },
   { path: '/ad', component: AdPage },
   { path: '/profile', component: UserProfilePage },
+  { path: '/favourites', component: FavouritesPage },
 ];
 
 export const publicRoutes = [
