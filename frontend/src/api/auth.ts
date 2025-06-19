@@ -9,10 +9,11 @@ export const login = async (authData: LoginDto): Promise<AuthResult | null> => {
   try {
     const response = await api.post('/api/user/login', authData);
     toast('✅ Успешный вход');
-    return response.data as AuthResult;
+    return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
-    toast(axiosError.message);
+    const message = axiosError.response?.data || axiosError.message;
+    toast.error(message as string);
     return null;
   }
 };
@@ -21,10 +22,11 @@ export const reg = async (regData: RegisterDto): Promise<AuthResult | null> => {
   try {
     const response = await api.post('/api/user/register', regData);
     toast('✅ Регистрация прошла успешно');
-    return response.data as AuthResult;
+    return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
-    toast(axiosError.message);
+    const message = axiosError.response?.data || axiosError.message;
+    toast.error(message as string);
     return null;
   }
 };
