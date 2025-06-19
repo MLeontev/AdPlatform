@@ -118,7 +118,7 @@ export function AdPublication({ data }: AdPageProps) {
             <CardContent>
               <Link
                 to={`/profile?id=${data.user.id}`}
-                className="flex items-center gap-4 hover:bg-gray-50 p-2 rounded-md transition"
+                className="flex items-center gap-4 p-2 rounded-md"
               >
                 <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
                   {data.user.avatarSrc ? (

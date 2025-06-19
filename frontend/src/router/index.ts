@@ -24,4 +24,5 @@ export const publicRoutes = [
   { path: '/ad', component: AdPage },
   { path: '/login', component: LoginPage },
   { path: '/register', component: RegisterPage },
+  { path: '/profile', component: UserProfilePage },
 ];
