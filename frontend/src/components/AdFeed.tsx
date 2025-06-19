@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, KeyboardEvent } from 'react';
 import { AdListItemDto } from '@/types/DTOs/adListItemDto.ts';
 import { AdFeedElement } from '@/components/AdFeedElement.tsx';
 import { getAds, getUserAds, getUserFavouriteAds } from '@/api/ads.ts';
@@ -106,6 +106,12 @@ function AdFeed(
     console.log(adId);
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSearch();
+    }
+  };
+
   const renderFilters = () => (
     <ScrollArea className="h-full pr-3">
       <div className="flex flex-col space-y-4">
@@ -171,6 +177,7 @@ function AdFeed(
                 value={searchQuery}
                 className="rounded-2xl"
                 placeholder={'Поиск'}
+                onKeyDown={handleKeyDown}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Button className="ml-1 rounded-2xl" onClick={onSearch}>
