@@ -1,13 +1,13 @@
 import { useAppData } from '@/components/DataProvider.tsx';
+import { SearchSelect } from '@/components/SearchSelect.tsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuthStore } from '@/store/authStore.ts';
 import type { Ad } from '@/types/ad';
 import { AdImage } from '@/types/adImage.ts';
 import React, { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/authStore.ts';
-import { SearchSelect } from '@/components/SearchSelect.tsx';
 
 interface AdFormProps {
   initialData?: Ad | null;
@@ -140,7 +140,7 @@ export const AdForm: React.FC<AdFormProps> = ({ initialData, onSubmit }) => {
         className="m-[10px] w-[413px] min-h-[150px]"
         name="description"
         minLength={10}
-        maxLength={100}
+        maxLength={1000}
         value={formData.description}
         onChange={handleChange}
         placeholder="Описание"
