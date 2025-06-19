@@ -3,6 +3,7 @@ using AdPlatform.DTOs;
 using AdPlatform.DTOs.Ads;
 using AdPlatform.Interfaces;
 using AdPlatform.Models;
+using AdPlatform.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdPlatform.Services;
@@ -10,10 +11,17 @@ namespace AdPlatform.Services;
 public class FavouritesService : IFavouritesService
 {
     private readonly AppDbContext _dbContext;
+    private readonly IStorageService _storageService;
+    private readonly MinioOptions _minioOptions;
 
-    public FavouritesService(AppDbContext dbContext)
+    public FavouritesService(
+        AppDbContext dbContext,
+        IStorageService storageService,
+        MinioOptions minioOptions)
     {
         _dbContext = dbContext;
+        _storageService = storageService;
+        _minioOptions = minioOptions;
     }
 
     public async Task AddToFavourites(int userId, int adId)
@@ -78,16 +86,25 @@ public class FavouritesService : IFavouritesService
             .Take(filterDto.PageSize)
             .ToListAsync();
 
-        var adDtos = ads.Select(ad => new AdListItemDto
+        var adDtos = new List<AdListItemDto>();
+        foreach (var ad in ads)
         {
-            Id = ad.Id,
-            Title = ad.Title,
-            Price = ad.Price,
-            IsSold = ad.IsSold,
-            CategoryName = ad.Category.Name,
-            CityName = ad.City.Name,
-            MainImage = ad.Images.FirstOrDefault()?.ImageSrc ?? string.Empty
-        }).ToList();
+            var mainImage = ad.Images.FirstOrDefault()?.ImageSrc ?? string.Empty;
+            var url = string.IsNullOrEmpty(mainImage)
+                ? string.Empty
+                : await _storageService.GetFileUrlAsync(mainImage, _minioOptions.AdImagesBucketName);
+
+            adDtos.Add(new AdListItemDto
+            {
+                Id = ad.Id,
+                Title = ad.Title,
+                Price = ad.Price,
+                IsSold = ad.IsSold,
+                CategoryName = ad.Category.Name,
+                CityName = ad.City.Name,
+                MainImage = url
+            });
+        }
 
         return new PagedList<AdListItemDto>(adDtos, filterDto.PageNumber, filterDto.PageSize, totalCount);
     }
