@@ -1,3 +1,4 @@
+import { addToFavourites, removeFromFavourites } from '@/api/favourites';
 import ImageGallery from '@/components/ImageGalary.tsx';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,8 +18,18 @@ import { AdDto } from '@/types/DTOs/adDto.ts';
 import { ImageDto } from '@/types/DTOs/imageDto.ts';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { Calendar, MapPin, Pencil, Tag, User } from 'lucide-react';
+import {
+  Calendar,
+  Heart,
+  HeartOff,
+  MapPin,
+  Pencil,
+  Tag,
+  User,
+} from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface AdPageProps {
   data: AdDto;
@@ -27,6 +38,24 @@ interface AdPageProps {
 export function AdPublication({ data }: AdPageProps) {
   const currentUserId = useAuthStore((state) => state.id);
   const isAuthor = currentUserId === data.user.id;
+  const isAuth = useAuthStore((state) => state.isAuth);
+
+  const [isFavorite, setIsFavorite] = useState(data.isFavorite);
+
+  const handleFavoriteClick = async () => {
+    if (!isAuth) {
+      toast('🔔 Войдите в аккаунт, чтобы добавлять объявления в избранное');
+      return;
+    }
+
+    const success = isFavorite
+      ? await removeFromFavourites(data.id)
+      : await addToFavourites(data.id);
+
+    if (success) {
+      setIsFavorite(!isFavorite);
+    }
+  };
 
   const formattedDate = format(new Date(data.createdAt), 'PPP', {
     locale: ru,
@@ -181,8 +210,17 @@ export function AdPublication({ data }: AdPageProps) {
           </Card>
 
           <div className="space-y-2">
-            <Button variant="outline" className="w-full">
-              Добавить в избранное
+            <Button
+              variant={data.isFavorite ? 'secondary' : 'outline'}
+              className="w-full flex items-center gap-2 justify-center"
+              onClick={handleFavoriteClick}
+            >
+              {isFavorite ? (
+                <HeartOff className="w-4 h-4" />
+              ) : (
+                <Heart className="w-4 h-4" />
+              )}
+              {isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
             </Button>
           </div>
         </div>
