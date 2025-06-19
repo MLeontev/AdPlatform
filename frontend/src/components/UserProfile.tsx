@@ -17,7 +17,6 @@ export function UserProfile({ user }: UserProfileProps) {
     const date = new Date(dateString);
     return date.toLocaleDateString('ru-RU');
   };
-
   const userId = useAuthStore((state) => state.id);
 
   return (
@@ -110,6 +109,10 @@ export function UserProfile({ user }: UserProfileProps) {
 
                 <Button variant="outline" className="w-full" asChild>
                   <Link to="/favourites">Избранные объявления</Link>
+                </Button>
+
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/profile-update">Редактировать профиль</Link>
                 </Button>
               </CardContent>
             </Card>
