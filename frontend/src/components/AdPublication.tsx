@@ -40,7 +40,7 @@ export function AdPublication({ data }: AdPageProps) {
   const isAuthor = currentUserId === data.user.id;
   const isAuth = useAuthStore((state) => state.isAuth);
 
-  const [isFavorite, setIsFavorite] = useState(data.isFavorite);
+  const [isFavourite, setIsFavourite] = useState(data.isFavourite);
 
   const handleFavoriteClick = async () => {
     if (!isAuth) {
@@ -48,12 +48,12 @@ export function AdPublication({ data }: AdPageProps) {
       return;
     }
 
-    const success = isFavorite
+    const success = isFavourite
       ? await removeFromFavourites(data.id)
       : await addToFavourites(data.id);
 
     if (success) {
-      setIsFavorite(!isFavorite);
+      setIsFavourite(!isFavourite);
     }
   };
 
@@ -211,16 +211,16 @@ export function AdPublication({ data }: AdPageProps) {
 
           <div className="space-y-2">
             <Button
-              variant={data.isFavorite ? 'secondary' : 'outline'}
+              variant={isFavourite ? 'secondary' : 'outline'}
               className="w-full flex items-center gap-2 justify-center"
               onClick={handleFavoriteClick}
             >
-              {isFavorite ? (
+              {isFavourite ? (
                 <HeartOff className="w-4 h-4" />
               ) : (
                 <Heart className="w-4 h-4" />
               )}
-              {isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+              {isFavourite ? 'Удалить из избранного' : 'Добавить в избранное'}
             </Button>
           </div>
         </div>

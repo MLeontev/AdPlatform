@@ -66,7 +66,7 @@ public class AdController : ControllerBase
     {
         try
         {
-            var ad = await _adService.GetAdById(id);
+            var ad = await _adService.GetAdById(id, User);
             if (ad is null) return NotFound();
 
             return Ok(ad);

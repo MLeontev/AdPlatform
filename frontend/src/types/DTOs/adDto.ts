@@ -15,5 +15,5 @@ export interface AdDto {
   cityName: string;
   user: UserDto;
   images: ImageDto[];
-  isFavorite: boolean;
+  isFavourite: boolean;
 }
