@@ -6,6 +6,7 @@ import { FormPage } from '@/pages/FormPage.tsx';
 import { LoginPage } from '@/pages/LoginPage.tsx';
 import { RegisterPage } from '@/pages/RegisterPage.tsx';
 import { FavouritesPage } from '@/pages/FavouritesPage.tsx';
+import {UpdateProfileForm} from "@/components/UpdateProfileForm.tsx";
 
 export const privateRoutes = [
   // { path: '/defaultpage', component: DefaultPage },
@@ -23,4 +24,5 @@ export const publicRoutes = [
   { path: '/login', component: LoginPage },
   { path: '/register', component: RegisterPage },
   { path: '/profile', component: UserProfilePage },
+  { path: '/profile-update', component: UpdateProfileForm },
 ];

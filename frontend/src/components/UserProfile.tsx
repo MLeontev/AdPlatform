@@ -17,7 +17,6 @@ export function UserProfile({ user }: UserProfileProps) {
     const date = new Date(dateString);
     return date.toLocaleDateString('ru-RU');
   };
-
   const userId = useAuthStore((state) => state.id);
 
   return (
