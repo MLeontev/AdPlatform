@@ -24,12 +24,14 @@ import {
   HeartOff,
   MapPin,
   Pencil,
-  Tag,
+  Tag, Trash,
   User,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { deleteAd } from '@/api/ads.ts';
+import { DeleteConfirmationDialog } from '@/components/DeleteConfirmationDialog.tsx';
 
 interface AdPageProps {
   data: AdDto;
@@ -39,6 +41,7 @@ export function AdPublication({ data }: AdPageProps) {
   const currentUserId = useAuthStore((state) => state.id);
   const isAuthor = currentUserId === data.user.id;
   const isAuth = useAuthStore((state) => state.isAuth);
+  const navigate = useNavigate();
 
   const [isFavourite, setIsFavourite] = useState(data.isFavourite);
 
@@ -94,6 +97,19 @@ export function AdPublication({ data }: AdPageProps) {
                     <Pencil className="h-4 w-4" />
                   </Button>
                 </Link>
+              )}
+              {isAuthor && (
+                <DeleteConfirmationDialog
+                  onConfirm={() => {
+                    deleteAd(data.id).then(() => {
+                      navigate('/adfeed');
+                    });
+                  }}
+                >
+                  <Button variant="outline" size="icon" title="Удалить">
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </DeleteConfirmationDialog>
               )}
             </div>
           </div>

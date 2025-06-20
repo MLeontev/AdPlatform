@@ -106,6 +106,20 @@ export const getUserAds = async (
     });
 };
 
+export const deleteAd = async (adId: number): Promise<void> => {
+  return await api
+    .delete('/api/ad/' + adId)
+    .then(() => {
+      toast('✅ Объявление удалено');
+      return;
+    })
+    .catch((error) => {
+      console.error('Ошибка при удалении:', error);
+      toast('❌ Не удалось удалить объявление');
+      return;
+    });
+};
+
 export const putAd = async (id: number, formData: Ad): Promise<void> => {
   try {
     const formDataToSend = new FormData();

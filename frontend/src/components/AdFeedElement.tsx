@@ -26,18 +26,19 @@ export const AdFeedElement = (props: {
         </div>
       )}
       <CardContent className="flex flex-row flex-nowrap">
-        <img
-          src={props.ad.mainImage !== '' ? props.ad.mainImage : defaultImage}
-          alt="Фото товара"
-          className="w-[150px] h-[130px] my-3 object-cover rounded-lg"
-        />
-        <div className="flex flex-col ml-[10px] text-left justify-center">
+        <div className="flex flex-col w-[150px] h-[130px] my-3">
+          <img
+            src={props.ad.mainImage !== '' ? props.ad.mainImage : defaultImage}
+            alt="Фото товара"
+            className="w-[150px] h-[130px]  object-cover rounded-lg"
+          />
+        </div>
+        <div className="flex flex-col ml-[10px] text-left justify-center w-full overflow-auto">
           <CardTitle className="text-xl">{props.ad.title}</CardTitle>
           <CardTitle className="text-xl">{props.ad.price} ₽</CardTitle>
           <CardDescription>Категория: {props.ad.categoryName}</CardDescription>
           <CardDescription>Город: {props.ad.cityName}</CardDescription>
         </div>
-        <div className="flex justify-end items-center w-full" />
       </CardContent>
     </Card>
   );
